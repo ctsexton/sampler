@@ -1,0 +1,5 @@
+baseDir: /Users/cameronsexton/repos/sc/mangler
+morphAddr:
+  host: localhost
+  port: 5050
+
