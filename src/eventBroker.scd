@@ -9,12 +9,13 @@
         subscriber.notify(event);
       })
     },
-    subscribe: { |self, topic, consumer|
-      subscribersByTopic.put(
-        topic,
-        subscribersByTopic.at(topic).add(consumer)
-      );
-      subscribersByTopic.postln;
+    subscribe: { |self, topicsToSubscribe, consumer|
+      topicsToSubscribe.do({ |topic|
+        subscribersByTopic.put(
+          topic,
+          subscribersByTopic.at(topic).add(consumer)
+        );
+      })
     }
   );
 }
