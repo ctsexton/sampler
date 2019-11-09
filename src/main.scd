@@ -3,7 +3,7 @@ var createStore = "./store.scd".loadRelative[0];
 var createEventBroker = "./eventBroker.scd".loadRelative[0];
 var setupMidiDevices = "./setupMidiDevices.scd".loadRelative[0];
 var ui = "./ui.scd".loadRelative[0];
-var synthDefs = ["./synthdefs/test.scd".loadRelative[0]];
+var synthDefs = ["./synthdefs/sampler.scd".loadRelative[0]];
 var getSamples = "./samples.scd".loadRelative[0];
 
 var main = { |config|
@@ -18,16 +18,24 @@ var main = { |config|
   });
   eventBroker.subscribe([\track, \master], ui);
   store.initialize;
-  synths = Array.fill(3, {
-    Synth.new(\test, [
-      \volume, 1,
-      \pitch, 0.5,
-      \cutoff, 1
+  synths = Array.fill(3, { |i|
+    Synth.new(\windowLooper, [
+      \buffer, samples[0].buffer,
+      \rate, 1,
+      \window, 1,
+      \offset, 0,
+      \playhead, state.tracks[i].playhead.bus,
+      \lpfCutoff, 1,
+      \hpfCutoff, 0,
+      \status, 0,
+      \output, 0,
+      \volume, 1
     ])});
   synths.do({ |item, i| item.map(
-    \volume, state.tracks[i].volume.bus,
-    \pitch, state.tracks[i].offset.bus,
-    \cutoff, state.tracks[i].window.bus
+    \offset, state.tracks[i].offset.bus,
+    \lpfCutoff, state.tracks[i].window.bus,
+    \rate, state.tracks[i].rate.bus,
+    \volume, state.tracks[i].volume.bus
   )});
 };
 
