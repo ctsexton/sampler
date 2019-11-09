@@ -33,7 +33,7 @@ var main = { |config|
     ])});
   synths.do({ |item, i| item.map(
     \offset, state.tracks[i].offset.bus,
-    \lpfCutoff, state.tracks[i].window.bus,
+    \window, state.tracks[i].window.bus,
     \rate, state.tracks[i].rate.bus,
     \volume, state.tracks[i].volume.bus
   )});
