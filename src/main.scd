@@ -4,6 +4,7 @@ var createEventBroker = "./eventBroker.scd".loadRelative[0];
 var setupMidiDevices = "./setupMidiDevices.scd".loadRelative[0];
 var ui = "./ui.scd".loadRelative[0];
 var synthDefs = ["./synthdefs/test.scd".loadRelative[0]];
+var getSamples = "./samples.scd".loadRelative[0];
 
 var main = { |config|
   var topics = [\track, \master];
@@ -11,6 +12,7 @@ var main = { |config|
   var state = createState.value(3);
   var store = createStore.value(state, eventBroker);
   var synths;
+  var samples = getSamples.value(config);
   if (config["enableMIDI"] == "true", {
     setupMidiDevices.value(config, store, eventBroker);
   });
