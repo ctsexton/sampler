@@ -10,14 +10,23 @@ var main = { |config|
   var eventBroker = createEventBroker.value(topics);
   var state = createState.value(3);
   var store = createStore.value(state, eventBroker);
-  var synth;
+  var synths;
   if (config["enableMIDI"] == "true", {
     setupMidiDevices.value(config, store, eventBroker);
   });
   eventBroker.subscribe([\track, \master], ui);
   store.initialize;
-  synth = Synth.new(\test, [\volume, 1, \pitch, 0.5]);
-  synth.map(\volume, state.tracks[0].volume.bus, \pitch, state.tracks[0].offset.bus);
+  synths = Array.fill(3, {
+    Synth.new(\test, [
+      \volume, 1,
+      \pitch, 0.5,
+      \cutoff, 1
+    ])});
+  synths.do({ |item, i| item.map(
+    \volume, state.tracks[i].volume.bus,
+    \pitch, state.tracks[i].offset.bus,
+    \cutoff, state.tracks[i].window.bus
+  )});
 };
 
 s.waitForBoot({ 
