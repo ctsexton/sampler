@@ -44,7 +44,6 @@
         var x = ctrlXPositions.at(msg.param);
         var y = msg.index;
         var vel = msg.normalized;
-        x.postln;
         if (x != nil, {
           mft.ledset(level, x, y, vel);
         })

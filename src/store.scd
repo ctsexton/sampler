@@ -37,6 +37,9 @@
     lpfCutoff: { |trackIndex, val|
       setTrackClippedParameter.value(trackIndex, \lpfCutoff, val, 0, 1)
     },
+    lpfResonance: { |trackIndex, val|
+      setTrackClippedParameter.value(trackIndex, \lpfResonance, val, 0, 1);
+    },
     hpfCutoff: { |trackIndex, val|
       setTrackClippedParameter.value(trackIndex, \hpfCutoff, val, 0, 1)
     },

@@ -22,6 +22,11 @@
             val: 1,
             bus: Bus.control().set(1)
           ),
+          lpfResonance: (
+            default: 0.5,
+            val: 1,
+            bus: Bus.control().set(0.5)
+          ),
           hpfCutoff: (
             default: 0,
             val: 0,

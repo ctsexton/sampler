@@ -72,6 +72,16 @@
           window.refresh;
         }.defer;
       })
+    },
+    setResonance: { |self, newResonance|
+      if (clicked == false, {
+        resonance = newResonance;
+        {
+          grabber.left = v.bounds.left + v.bounds.width * cutoff;
+          grabber.top = (v.bounds.height * resonance) - radius;
+          window.refresh;
+        }.defer;
+      })
     }
   )
 }

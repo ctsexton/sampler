@@ -1,6 +1,5 @@
 (
   notify: { |self, msg|
-    "UI has been notified".postln;
-    msg.postln;
+    if (msg.param == \lpfResonance, { msg.postln });
   }
 )
