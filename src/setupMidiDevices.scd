@@ -39,6 +39,22 @@
     })
   };
 
+  mft.onDoubleClick = { |self, event|
+    if (event.y < 3, {
+      var params = inputMap[event.x].asSet;
+      var trackIndex = event.y;
+      params.do({ |param| sampler.resetTrackParameter(trackIndex, param)});
+    })
+  };
+
+  mft.onClick = { |self, event|
+    if (event.y < 3 && inputMap[event.x][0] == \rate && event.vel == 1, {
+      var trackIndex = event.y;
+      var currentValue = sampler.getTrackParameter(trackIndex, \rate);
+      sampler.setTrackParameter(trackIndex, \rate, currentValue * -1);
+    })
+  };
+
   ui = (
     notify: { |self, msg|
       if (msg.topic == \track, {
