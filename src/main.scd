@@ -22,7 +22,6 @@ var main = { |config|
   });
   // eventBroker.subscribe([\track, \master], ui);
   store.initialize;
-  /*
   synths = Array.fill(3, { |i|
     Synth.new(\windowLooper, [
       \buffer, samples[0].buffer,
@@ -40,9 +39,9 @@ var main = { |config|
     \offset, state.tracks[i].offset.bus,
     \window, state.tracks[i].window.bus,
     \rate, state.tracks[i].rate.bus,
-    \volume, state.tracks[i].volume.bus
+    \volume, state.tracks[i].volume.bus,
+    \lpfCutoff, state.tracks[i].lpfCutoff.bus
   )});
-  */
 };
 
 s.waitForBoot({ 

@@ -1,10 +1,10 @@
 { |config, sampler, eventBroker|
   var ui;
   var mft;
-  var ctrlsInOrder = [\offset, \window, \rate, \volume];
+  var ctrlsInOrder = [\offset, \lpfCutoff, \rate, \volume];
   var ctrlXPositions = (
     offset: 0,
-    window: 1,
+    lpfCutoff: 1,
     rate: 2,
     volume: 3
   );
