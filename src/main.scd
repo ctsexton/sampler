@@ -3,7 +3,7 @@ var createStore = "./store.scd".loadRelative[0];
 var createEventBroker = "./eventBroker.scd".loadRelative[0];
 var setupMidiDevices = "./setupMidiDevices.scd".loadRelative[0];
 var setupGUI = "./setupGUI.scd".loadRelative[0];
-var ui = "./ui.scd".loadRelative[0];
+var setupDebugUI = "./debugUI.scd".loadRelative[0];
 var synthDefs = ["./synthdefs/sampler.scd".loadRelative[0]];
 var getSamples = "./samples.scd".loadRelative[0];
 var createSynth = "./synth.scd".loadRelative[0];
@@ -21,7 +21,9 @@ var main = { |config|
   if (config["enableGUI"] == "true", {
     setupGUI.value(config, store, eventBroker);
   });
-  eventBroker.subscribe([\track, \master], ui);
+  if (config["debug"] == "true", {
+    setupDebugUI.value(config, store, eventBroker);
+  });
   store.initialize;
   synth = createSynth.value(samples, state);
   synth.start;

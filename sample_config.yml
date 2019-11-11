@@ -3,5 +3,7 @@ morphAddr:
   host: localhost
   port: 5050
 enableMIDI: true
+enableGUI: true
+debug: true
 MFTDeviceName: Midi Fighter Twister
 MFTPortName: Midi Fighter Twister
