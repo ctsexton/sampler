@@ -2,6 +2,7 @@ var createState = "./state.scd".loadRelative[0];
 var createStore = "./store.scd".loadRelative[0];
 var createEventBroker = "./eventBroker.scd".loadRelative[0];
 var setupMidiDevices = "./setupMidiDevices.scd".loadRelative[0];
+var setupGUI = "./setupGUI.scd".loadRelative[0];
 var ui = "./ui.scd".loadRelative[0];
 var synthDefs = ["./synthdefs/sampler.scd".loadRelative[0]];
 var getSamples = "./samples.scd".loadRelative[0];
@@ -16,8 +17,12 @@ var main = { |config|
   if (config["enableMIDI"] == "true", {
     setupMidiDevices.value(config, store, eventBroker);
   });
-  eventBroker.subscribe([\track, \master], ui);
+  if (config["enableGUI"] == "true", {
+    setupGUI.value(config, store, eventBroker);
+  });
+  // eventBroker.subscribe([\track, \master], ui);
   store.initialize;
+  /*
   synths = Array.fill(3, { |i|
     Synth.new(\windowLooper, [
       \buffer, samples[0].buffer,
@@ -37,6 +42,7 @@ var main = { |config|
     \rate, state.tracks[i].rate.bus,
     \volume, state.tracks[i].volume.bus
   )});
+  */
 };
 
 s.waitForBoot({ 
@@ -47,5 +53,5 @@ s.waitForBoot({
     synthDefs.do({ |def| def.add; });
     s.sync;
     main.value(config);
-  }).play;
+  }).play(AppClock);
 })
