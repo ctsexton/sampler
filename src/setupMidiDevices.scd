@@ -1,12 +1,14 @@
 { |config, sampler, eventBroker|
   var ui;
   var mft;
-  var ctrlsInOrder = [\offset, \lpfCutoff, \rate, \volume];
-  var ctrlXPositions = (
-    offset: 0,
-    lpfCutoff: 1,
-    rate: 2,
-    volume: 3
+  var inputMap = [[\offset, \window], [\lpfCutoff, \lpfResonance], [\rate, \rate], [\volume, \volume]];
+  var outputMap = (
+    offset: [(x: 0, level: 0)],
+    window: [(x: 0, level: 1)],
+    lpfCutoff: [(x: 1, level: 0)],
+    lpfResonance: [(x: 1, level: 1)],
+    rate: [(x: 2, level: 0), (x: 2, level: 1)],
+    volume: [(x: 3, level: 0), (x: 3, level: 1)]
   );
   var masterCtrlsInOrder = [\reverb, \lpfCutoff, \hpfCutoff, \volume];
   var masterCtrlXPositions = (
@@ -22,7 +24,7 @@
 
   mft.gridResponderFunction = { |self, event|
     if (event.y < 3, {
-      var param = ctrlsInOrder.at(event.x);
+      var param = inputMap[event.x][event.level];
       var inc = event.vel * 0.01;
       var trackIndex = event.y;
       var currentValue = sampler.getTrackParameter(trackIndex, param);
@@ -40,13 +42,12 @@
   ui = (
     notify: { |self, msg|
       if (msg.topic == \track, {
-        var level = 0;
-        var x = ctrlXPositions.at(msg.param);
+        var ctrls = outputMap[msg.param];
         var y = msg.index;
         var vel = msg.normalized;
-        if (x != nil, {
-          mft.ledset(level, x, y, vel);
-        })
+        if (ctrls != nil, {
+          ctrls.do({ |ctrl| mft.ledset(ctrl.level, ctrl.x, y, vel) });
+        });
       }, {
         var level = 0;
         var x = masterCtrlXPositions[msg.param];

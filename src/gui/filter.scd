@@ -6,7 +6,7 @@
   var relativeWhere;
   var v = UserView(window, Rect(0, 0, window.bounds.width, window.bounds.height));
   var radius = 7;
-  var grabber = Rect(v.bounds.left + v.bounds.width * cutoff, (v.bounds.height * resonance) - radius, radius * 2, radius * 2);
+  var grabber = Rect(v.bounds.left + v.bounds.width * cutoff, (v.bounds.height * (1 - resonance)) - radius, radius * 2, radius * 2);
   var lpfSlope = 1.25;
 
   var drawGrabber = { |grabber|
@@ -32,7 +32,7 @@
 
   v.onResize = { |newView|
     grabber.left = newView.bounds.left + newView.bounds.width * cutoff;
-    grabber.top = (newView.bounds.height * resonance) - radius;
+    grabber.top = (newView.bounds.height * (1 - resonance)) - radius;
   };
 
   v.drawFunc = {
@@ -54,7 +54,7 @@
     if (clicked, {
       grabber.origin = Point(x, y) - relativeWhere;
       cutoff = x / v.bounds.width;
-      resonance = y / v.bounds.height;
+      resonance = 1 - (y / v.bounds.height);
       action.value(cutoff, resonance);
       window.refresh;
     });
@@ -68,7 +68,7 @@
         cutoff = newCutoff;
         {
           grabber.left = v.bounds.left + v.bounds.width * cutoff;
-          grabber.top = (v.bounds.height * resonance) - radius;
+          grabber.top = (v.bounds.height * (1 - resonance)) - radius;
           window.refresh;
         }.defer;
       })
@@ -78,7 +78,7 @@
         resonance = newResonance;
         {
           grabber.left = v.bounds.left + v.bounds.width * cutoff;
-          grabber.top = (v.bounds.height * resonance) - radius;
+          grabber.top = (v.bounds.height * (1 - resonance)) - radius;
           window.refresh;
         }.defer;
       })
