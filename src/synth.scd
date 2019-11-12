@@ -1,33 +1,35 @@
-{ |samples, state, audioBuses|
+{ |samples, state, busses|
   (
     start: {
-      var synths, output;
-      output = { Out.ar(0, Mix.ar(In.ar(audioBuses.trackOutputs))!2) }.play;
+      var synths, output, trackOutputs;
+      trackOutputs = busses.tracks.collect({ |track| track.output });
+      output = { Out.ar(0, Mix.ar(In.ar(trackOutputs))!2) }.play;
       s.sync;
       synths = Array.fill(3, { |i|
         var track = state.tracks[i];
+        var trackBusses = busses.tracks[i];
         Synth.new(\windowLooper, [
           \buffer, samples[0].buffer,
-          \rate, track.rate.val,
-          \window, track.window.val,
-          \offset, track.offset.val,
-          \playhead, track.playhead.bus,
-          \lpfCutoff, track.lpfCutoff.val,
-          \lpfResonance, track.lpfResonance.val,
-          \hpfCutoff, track.hpfCutoff.val,
+          \rate, track.rate,
+          \window, track.window,
+          \offset, track.offset,
+          \playhead, trackBusses.playhead,
+          \lpfCutoff, track.lpfCutoff,
+          \lpfResonance, track.lpfResonance,
+          \hpfCutoff, track.hpfCutoff,
           \status, 0,
-          \output, audioBuses.trackOutputs[i],
-          \prefilterOutput, audioBuses.trackPreFilterOutputs[i],
-          \volume, track.volume.val
+          \output, trackBusses.output,
+          \prefilterOutput, trackBusses.prefilter,
+          \volume, track.volume
         ])
       });
       synths.do({ |item, i| item.map(
-        \offset, state.tracks[i].offset.bus,
-        \window, state.tracks[i].window.bus,
-        \rate, state.tracks[i].rate.bus,
-        \volume, state.tracks[i].volume.bus,
-        \lpfCutoff, state.tracks[i].lpfCutoff.bus,
-        \lpfResonance, state.tracks[i].lpfResonance.bus
+        \offset, busses.tracks[i].offset,
+        \window, busses.tracks[i].window,
+        \rate, busses.tracks[i].rate,
+        \volume, busses.tracks[i].volume,
+        \lpfCutoff, busses.tracks[i].lpfCutoff,
+        \lpfResonance, busses.tracks[i].lpfResonance
       )});
     }
   )

@@ -2,80 +2,24 @@
   (
     tracks: Array.fill(numTracks, {
         (
-          offset: (
-            default: 0,
-            val: 0,
-            bus: Bus.control().set(0)
-          ),
-          window: (
-            default: 1,
-            val: 1,
-            bus: Bus.control().set(1)
-          ),
-          rate: (
-            default: 1,
-            val: 1,
-            bus: Bus.control().set(1)
-          ),
-          lpfCutoff: (
-            default: 1,
-            val: 1,
-            bus: Bus.control().set(1)
-          ),
-          lpfResonance: (
-            default: 0.5,
-            val: 1,
-            bus: Bus.control().set(0.5)
-          ),
-          hpfCutoff: (
-            default: 0,
-            val: 0,
-            bus: Bus.control().set(0)
-          ),
-          volume: (
-            default: 0,
-            val: 0,
-            bus: Bus.control().set(0)
-          ),
-          sampleIndex: (
-            default: 0,
-            val: 0,
-            bus: Bus.control().set(0)
-          ),
-          playhead: (
-            default: 0,
-            val: 0,
-            bus: Bus.control().set(0)
-          )
+          offset: 0,
+          window: 1,
+          rate: 1,
+          lpfCutoff: 1,
+          lpfResonance: 0.5,
+          hpfCutoff: 0,
+          volume: 0,
+          sampleIndex: 0,
+          playhead: 0
         )
       }
     ),
     master: (
-      reverb: (
-        default: 0,
-        val: 0,
-        bus: Bus.control().set(0)
-      ),
-      distortion: (
-        default: 0,
-        val: 0,
-        bus: Bus.control().set(0)
-      ),
-      lpfCutoff: (
-        default: 1,
-        val: 1,
-        bus: Bus.control().set(1)
-      ),
-      hpfCutoff: (
-        default: 0,
-        val: 0,
-        bus: Bus.control().set(0)
-      ),
-      volume: (
-        default: 0,
-        val: 0,
-        bus: Bus.control().set(0)
-      )
+      reverb: 0,
+      distortion: 0,
+      lpfCutoff: 1,
+      hpfCutoff: 0,
+      volume: 0
     )
   )
 }

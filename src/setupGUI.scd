@@ -1,25 +1,42 @@
 var createFilterGUI = "./gui/filter.scd".loadRelative[0];
-{ |config, sampler, eventBroker, audioBuses|
+var createLooperGUI = "./gui/looper.scd".loadRelative[0];
+
+{ |config, sampler, eventBroker, busses|
   var ui;
-  var filterGUIs;
+  var filterGUIs, looperGUIs;
   var freqscope;
-  var bounds = Rect(100, 700, 800, 800);
-  var window = Window("filt", bounds);
-  var views = { View.new() } ! 3;
+  var bounds = Rect(100, 700, 1600, 800);
+  var parentWindow = Window("bITMangler9000", bounds);
+  var filterViews = { View.new() } ! 3;
+  var looperViews = { View.new() } ! 3;
   var notifications;
-  window.layout = VLayout(*views);
+
+  parentWindow.layout = HLayout(VLayout(*filterViews), VLayout(*looperViews));
+
   filterGUIs = 3.collect({ |i|
     var filterAction = { |cutoff, resonance|
       sampler.setTrackParameter(i, \lpfCutoff, cutoff);
       sampler.setTrackParameter(i, \lpfResonance, resonance);
     };
-    createFilterGUI.value(views[i], audioBuses.trackPreFilterOutputs[i], audioBuses.trackOutputs[i], filterAction);
+    createFilterGUI.value(filterViews[i], busses.tracks[i].prefilter, busses.tracks[i].output, filterAction);
   });
+  looperGUIs = 3.collect({ |i|
+    var action = { |offset, window|
+      sampler.setTrackParameter(i, \offset, offset);
+      sampler.setTrackParameter(i, \window, window);
+    };
+    createLooperGUI.value(looperViews[i], busses.tracks[i].playhead, action);
+  });
+  
+  looperGUIs.do({ |item| item.startAnimation });
 
-  window.front;
+  parentWindow.front;
   notifications = (
     lpfCutoff: { |msg| filterGUIs[msg.index].setCutoff(msg.normalized) },
-    lpfResonance: { |msg| filterGUIs[msg.index].setResonance(msg.normalized) }
+    lpfResonance: { |msg| filterGUIs[msg.index].setResonance(msg.normalized) },
+    offset: { |msg| looperGUIs[msg.index].setOffset(msg.normalized) },
+    window: { |msg| looperGUIs[msg.index].setWindow(msg.normalized) },
+    sampleIndex: { |msg| looperGUIs[msg.index].setSoundfile(msg.soundfile) }
   );
   ui = (
     notify: { |self, msg|

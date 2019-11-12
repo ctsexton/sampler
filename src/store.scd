@@ -1,26 +1,42 @@
-{ |state, eventBroker|
+{ |state, defaults, busses, eventBroker, samples|
   var setTrackClippedParameter = { |trackIndex, param, val, lo, hi|
     var clippedValue = val.clip(lo, hi);
     var normalizedValue = clippedValue.linlin(lo, hi, 0, 1);
-    state.tracks[trackIndex][param].val = clippedValue;
-    state.tracks[trackIndex][param].bus.set(clippedValue);
+    state.tracks[trackIndex][param] = clippedValue;
+    busses.tracks[trackIndex][param].set(clippedValue);
     eventBroker.publish((
       topic: \track,
       index: trackIndex,
       param: param,
-      val: state.tracks[trackIndex][param].val,
+      val: state.tracks[trackIndex][param],
       normalized: normalizedValue
+    ))
+  };
+  var setTrackSample = { |trackIndex, sampleIndex|
+    var clippedValue = sampleIndex.clip(0, samples.size);
+    var normalizedValue = clippedValue.linlin(0, samples.size, 0, 1);
+    var sample = samples[clippedValue];
+    state.tracks[trackIndex].sampleIndex = clippedValue;
+    busses.tracks[trackIndex].sampleIndex.set(clippedValue);
+    eventBroker.publish((
+      topic: \track,
+      index: trackIndex,
+      param: \sampleIndex,
+      val: clippedValue,
+      normalized: normalizedValue,
+      name: sample.name,
+      soundfile: sample.soundfile
     ))
   };
   var setMasterClippedParameter = { |param, val, lo, hi|
     var clippedValue = val.clip(lo, hi);
     var normalizedValue = clippedValue.linlin(lo, hi, 0, 1);
-    state.master[param].val = clippedValue;
-    state.master[param].bus.set(clippedValue);
+    state.master[param] = clippedValue;
+    busses.master[param].set(clippedValue);
     eventBroker.publish((
       topic: \master,
       param: param,
-      val: state.master[param].val,
+      val: state.master[param],
       normalized: normalizedValue
     ))
   };
@@ -45,6 +61,9 @@
     },
     volume: { |trackIndex, val|
       setTrackClippedParameter.value(trackIndex, \volume, val, 0, 1)
+    },
+    sampleIndex: { |trackIndex, val|
+      setTrackSample.value(trackIndex, val);
     }
   );
   var masterParameterFunctions = (
@@ -78,23 +97,23 @@
       })
     },
     getTrackParameter: { |self, trackIndex, parameter|
-      state.tracks[trackIndex][parameter].val;
+      state.tracks[trackIndex][parameter];
     },
     setTrackParameter: { |self, trackIndex, parameter, val|
       trackParameterFunctions.at(parameter).value(trackIndex, val);
     },
     resetTrackParameter: { |self, trackIndex, parameter|
-      var default = state.tracks[trackIndex][parameter].default;
+      var default = defaults.tracks[trackIndex][parameter];
       self.setTrackParameter(trackIndex, parameter, default);
     },
     getMasterParameter: { |self, parameter|
-      state.master[parameter].val;
+      state.master[parameter];
     },
     setMasterParameter: { |self, parameter, val|
       masterParameterFunctions.at(parameter).value(val);
     },
     resetMasterParameter: { |self, parameter|
-      var default = state.master[parameter].default;
+      var default = defaults.master[parameter];
       self.setMasterParameter(parameter, default);
     }
   )
