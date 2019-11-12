@@ -1,7 +1,7 @@
 var amplitudeWarp = \db.asWarp;
 SynthDef(\windowLooper, {
-  | buffer, rate, window, offset, playhead, volume, lpfCutoff, lpfResonance, hpfCutoff, status, output |
-  var bufFrames, out, index, resetPoint, isOutsideBounds, maxWindowSize, outsideBoundsTrigger, ramp, env, diff, playback;
+  | buffer, rate, window, offset, playhead, volume, lpfCutoff, lpfResonance, hpfCutoff, status, prefilterOutput, output |
+  var sig, bufFrames, prefilter, out, index, resetPoint, isOutsideBounds, maxWindowSize, outsideBoundsTrigger, ramp, env, diff, playback;
 
   bufFrames = BufFrames.kr(buffer);
 
@@ -22,10 +22,11 @@ SynthDef(\windowLooper, {
   ramp = EnvGen.ar(env, outsideBoundsTrigger);
   diff = Latch.ar(HPZ1.ar(playback, 2), outsideBoundsTrigger);
 
-  out = playback - (diff * ramp);
-  out = out.tanh * amplitudeWarp.map(volume.varlag(0.005));
-  out = HPF.ar(RLPF.ar(out, lpfCutoff.varlag(0.01).lincurve(0, 1, 20, 10000, 2.5), lpfResonance.varlag(0.01).linlin(0, 1, 1, 0)), hpfCutoff.varlag(0.05).lincurve(0, 1, 30, 5000, 2));
+  sig = playback - (diff * ramp);
+  prefilter = sig.tanh * amplitudeWarp.map(volume.varlag(0.005));
+  out = HPF.ar(RLPF.ar(prefilter, lpfCutoff.varlag(0.01).lincurve(0, 1, 20, 10000, 2.5), lpfResonance.varlag(0.01).linlin(0, 1, 1, 0)), hpfCutoff.varlag(0.05).lincurve(0, 1, 30, 5000, 2));
 
+  Out.ar(prefilterOutput, sig);
   Out.ar(output, out);
   FreeSelf.kr(status);
 });

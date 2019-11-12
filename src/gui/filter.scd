@@ -1,9 +1,10 @@
-{ |window, action|
+{ |window, preFilterBus, postFilterBus, action|
   var cutoff = 0.75;
   var resonance = 0.5;
   var q = 0;
   var clicked = false;
   var relativeWhere;
+  var freqscope = FreqScopeView.response(parent: window, bounds: Point(window.bounds.width, window.bounds.height), bus1: preFilterBus, bus2: postFilterBus);
   var v = UserView(window, Rect(0, 0, window.bounds.width, window.bounds.height));
   var radius = 7;
   var grabber = Rect(v.bounds.left + v.bounds.width * cutoff, (v.bounds.height * (1 - resonance)) - radius, radius * 2, radius * 2);
@@ -62,6 +63,10 @@
 
   v.mouseUpAction = { clicked = false };
   v.resize = 5;
+  freqscope.freqMode = 1;
+  freqscope.active = true;
+  freqscope.resize = 5;
+  window.onClose_({ freqscope.kill });
   (
     setCutoff: { |self, newCutoff|
       if (clicked == false, {

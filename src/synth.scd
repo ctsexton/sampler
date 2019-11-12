@@ -1,21 +1,26 @@
-{ |samples, state|
+{ |samples, state, audioBuses|
   (
     start: {
-    var synths = Array.fill(3, { |i|
-      var track = state.tracks[i];
-      Synth.new(\windowLooper, [
-        \buffer, samples[0].buffer,
-        \rate, track.rate.val,
-        \window, track.window.val,
-        \offset, track.offset.val,
-        \playhead, track.playhead.bus,
-        \lpfCutoff, track.lpfCutoff.val,
-        \lpfResonance, track.lpfResonance.val,
-        \hpfCutoff, track.hpfCutoff.val,
-        \status, 0,
-        \output, 0,
-        \volume, track.volume.val
-      ])});
+      var synths, output;
+      output = { Out.ar(0, Mix.ar(In.ar(audioBuses.trackOutputs))!2) }.play;
+      s.sync;
+      synths = Array.fill(3, { |i|
+        var track = state.tracks[i];
+        Synth.new(\windowLooper, [
+          \buffer, samples[0].buffer,
+          \rate, track.rate.val,
+          \window, track.window.val,
+          \offset, track.offset.val,
+          \playhead, track.playhead.bus,
+          \lpfCutoff, track.lpfCutoff.val,
+          \lpfResonance, track.lpfResonance.val,
+          \hpfCutoff, track.hpfCutoff.val,
+          \status, 0,
+          \output, audioBuses.trackOutputs[i],
+          \prefilterOutput, audioBuses.trackPreFilterOutputs[i],
+          \volume, track.volume.val
+        ])
+      });
       synths.do({ |item, i| item.map(
         \offset, state.tracks[i].offset.bus,
         \window, state.tracks[i].window.bus,

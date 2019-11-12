@@ -15,17 +15,21 @@ var main = { |config|
   var store = createStore.value(state, eventBroker);
   var synth;
   var samples = getSamples.value(config);
+  var audioBuses = (
+    trackOutputs:  { Bus.audio(s, 2) } ! 3,
+    trackPreFilterOutputs:  { Bus.audio(s, 2) } ! 3
+  );
   if (config["enableMIDI"] == "true", {
     setupMidiDevices.value(config, store, eventBroker);
   });
   if (config["enableGUI"] == "true", {
-    setupGUI.value(config, store, eventBroker);
+    setupGUI.value(config, store, eventBroker, audioBuses);
   });
   if (config["debug"] == "true", {
     setupDebugUI.value(config, store, eventBroker);
   });
   store.initialize;
-  synth = createSynth.value(samples, state);
+  synth = createSynth.value(samples, state, audioBuses);
   synth.start;
 };
 

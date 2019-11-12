@@ -1,7 +1,8 @@
 var createFilterGUI = "./gui/filter.scd".loadRelative[0];
-{ |config, sampler, eventBroker|
+{ |config, sampler, eventBroker, audioBuses|
   var ui;
   var filterGUIs;
+  var freqscope;
   var bounds = Rect(100, 700, 800, 800);
   var window = Window("filt", bounds);
   var views = { View.new() } ! 3;
@@ -12,7 +13,7 @@ var createFilterGUI = "./gui/filter.scd".loadRelative[0];
       sampler.setTrackParameter(i, \lpfCutoff, cutoff);
       sampler.setTrackParameter(i, \lpfResonance, resonance);
     };
-    createFilterGUI.value(views[i], filterAction);
+    createFilterGUI.value(views[i], audioBuses.trackPreFilterOutputs[i], audioBuses.trackOutputs[i], filterAction);
   });
 
   window.front;
