@@ -4,8 +4,8 @@
   var q = 0;
   var clicked = false;
   var relativeWhere;
-  var freqscope = FreqScopeView.response(parent: window, bounds: Point(window.bounds.width, window.bounds.height), bus1: preFilterBus, bus2: postFilterBus);
   var v = UserView(window, Rect(0, 0, window.bounds.width, window.bounds.height));
+  var freqscope = FreqScopeView.response(parent: window, bounds: Point(v.bounds.width, v.bounds.height), bus1: preFilterBus, bus2: postFilterBus);
   var radius = 7;
   var grabber = Rect(v.bounds.left + v.bounds.width * cutoff, (v.bounds.height * (1 - resonance)) - radius, radius * 2, radius * 2);
   var lpfSlope = 1.25;
@@ -63,6 +63,7 @@
 
   v.mouseUpAction = { clicked = false };
   v.resize = 5;
+  v.front;
   freqscope.freqMode = 1;
   freqscope.active = true;
   freqscope.resize = 5;
@@ -72,8 +73,7 @@
       if (clicked == false, {
         cutoff = newCutoff;
         {
-          grabber.left = v.bounds.left + v.bounds.width * cutoff;
-          grabber.top = (v.bounds.height * (1 - resonance)) - radius;
+          grabber.left = v.bounds.left + (v.bounds.width - 10) * cutoff - radius;
           window.refresh;
         }.defer;
       })
@@ -82,7 +82,6 @@
       if (clicked == false, {
         resonance = newResonance;
         {
-          grabber.left = v.bounds.left + v.bounds.width * cutoff;
           grabber.top = (v.bounds.height * (1 - resonance)) - radius;
           window.refresh;
         }.defer;
