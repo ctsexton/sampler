@@ -4,6 +4,7 @@ morphAddr:
   port: 5050
 enableMIDI: true
 enableGUI: true
+freqscopeActive: false
 debug: true
 MFTDeviceName: Midi Fighter Twister
 MFTPortName: Midi Fighter Twister

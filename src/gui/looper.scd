@@ -6,6 +6,7 @@
     timeCursorAnimation, 
     started, 
     updateTimeCursor, 
+    timeCursorLoop,
     updateOffset, 
     updateWindow, 
     updateSoundfile;
@@ -31,11 +32,18 @@
     action.value(offset, window);
   };
 
-  updateTimeCursor = {
-    playhead.get({ |val| { view.timeCursorPosition = val }.defer });
-    0.02.wait;
+  timeCursorLoop = { |val|
+    {
+      view.timeCursorPosition = val;
+      updateTimeCursor.defer(0.042);
+    }.defer
   };
-  timeCursorAnimation = Routine({ updateTimeCursor.loop });
+
+  updateTimeCursor = {
+    if (started, {
+      playhead.get(timeCursorLoop);
+    })
+  };
 
   updateOffset = { { view.setSelectionStart(0, offset * view.numFrames) }.defer };
   updateWindow = { { view.setSelectionSize(0, window * view.numFrames) }.defer };
@@ -67,17 +75,11 @@
       updateWindow.value();
     },
     startAnimation: {
-      if (started == false, {
-        started = true;
-        timeCursorAnimation.play;
-      })
+      started = true;
+      updateTimeCursor.value;
     },
     stopAnimation: {
-      if (started == true, {
-        started = false;
-        timeCursorAnimation.stop;
-        timeCursorAnimation.reset;
-      })
+      started = false;
     },
     toggleAnimation: { |self, input|
       var choice;

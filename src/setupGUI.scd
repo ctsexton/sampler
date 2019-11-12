@@ -18,7 +18,7 @@ var createLooperGUI = "./gui/looper.scd".loadRelative[0];
       sampler.setTrackParameter(i, \lpfCutoff, cutoff);
       sampler.setTrackParameter(i, \lpfResonance, resonance);
     };
-    createFilterGUI.value(filterViews[i], busses.tracks[i].prefilter, busses.tracks[i].output, filterAction);
+    createFilterGUI.value(filterViews[i], busses.tracks[i].prefilter, busses.tracks[i].output, filterAction, config["freqscopeActive"]);
   });
   looperGUIs = 3.collect({ |i|
     var action = { |offset, window|

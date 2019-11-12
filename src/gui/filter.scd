@@ -1,4 +1,4 @@
-{ |window, preFilterBus, postFilterBus, action|
+{ |window, preFilterBus, postFilterBus, action, freqscopeActive|
   var cutoff = 0.75;
   var resonance = 0.5;
   var q = 0;
@@ -65,7 +65,7 @@
   v.resize = 5;
   v.front;
   freqscope.freqMode = 1;
-  freqscope.active = true;
+  if (freqscopeActive == "true", { freqscope.active = true });
   freqscope.resize = 5;
   window.onClose_({ freqscope.kill });
   (
