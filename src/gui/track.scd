@@ -1,15 +1,22 @@
 var createFilterGUI = "./filter.scd".loadRelative[0];
 var createLooperGUI = "./looper.scd".loadRelative[0];
 var createVolumeGUI = "./volume.scd".loadRelative[0];
+var createRateGUI = "./rate.scd".loadRelative[0];
 
 {
   |config, window, sampler, busses, trackIndex|
-  var filter, filterAction, looper, looperAction, volume, volumeAction;
+  var rate, rateAction, filter, filterAction, looper, looperAction, volume, volumeAction;
   var i = trackIndex;
+  var rateView = View.new().maxWidth_(50);
   var filterView = View.new();
   var looperView = View.new();
   var volumeView = View.new().maxWidth_(40);
-  window.layout = HLayout(filterView, looperView, volumeView);
+  window.layout = HLayout(rateView, filterView, looperView, volumeView);
+
+  rateAction = { |rate|
+    sampler.setTrackParameter(i, \rate, rate);
+  };
+  rate = createRateGUI.value(rateView, rateAction);
 
   filterAction = { |cutoff, resonance|
     sampler.setTrackParameter(i, \lpfCutoff, cutoff);
@@ -31,6 +38,7 @@ var createVolumeGUI = "./volume.scd".loadRelative[0];
   looper.startAnimation;
 
   (
+    rate: rate,
     filter: filter,
     looper: looper,
     volume: volume

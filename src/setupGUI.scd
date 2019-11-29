@@ -15,6 +15,7 @@ var createTrackGUI = "./gui/track.scd".loadRelative[0];
   };
 
   notifications = (
+    rate: { |msg| tracks[msg.index].rate.setRate(msg.normalized) },
     lpfCutoff: { |msg| tracks[msg.index].filter.setCutoff(msg.normalized) },
     lpfResonance: { |msg| tracks[msg.index].filter.setResonance(msg.normalized) },
     offset: { |msg| tracks[msg.index].looper.setOffset(msg.normalized) },
