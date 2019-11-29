@@ -1,4 +1,4 @@
-{ |parent, playhead, action|
+{ |parent, playheadOscAddr, action|
   var view,
     soundfile,
     offset,
@@ -32,19 +32,6 @@
     action.value(offset, window);
   };
 
-  timeCursorLoop = { |val|
-    {
-      view.timeCursorPosition = val;
-      updateTimeCursor.defer(0.042);
-    }.defer
-  };
-
-  updateTimeCursor = {
-    if (started, {
-      playhead.get(timeCursorLoop);
-    })
-  };
-
   updateOffset = { { view.setSelectionStart(0, offset * view.numFrames) }.defer };
   updateWindow = { { view.setSelectionSize(0, window * view.numFrames) }.defer };
   updateSoundfile = {
@@ -76,10 +63,13 @@
     },
     startAnimation: {
       started = true;
-      updateTimeCursor.value;
+      updateTimeCursor = OSCFunc.new({ |msg|
+        { view.timeCursorPosition = msg[3] }.defer;
+      }, playheadOscAddr, s.addr);
     },
     stopAnimation: {
       started = false;
+      updateTimeCursor.free;
     },
     toggleAnimation: { |self, input|
       var choice;

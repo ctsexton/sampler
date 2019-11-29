@@ -27,7 +27,7 @@ var createVolumeGUI = "./gui/volume.scd".loadRelative[0];
       sampler.setTrackParameter(i, \offset, offset);
       sampler.setTrackParameter(i, \window, window);
     };
-    createLooperGUI.value(looperViews[i], busses.tracks[i].playhead, action);
+    createLooperGUI.value(looperViews[i], \track_playhead_ ++ i, action);
   });
   volumeGUIs = 3.collect({ |i|
     var action = { |volume|

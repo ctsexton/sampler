@@ -1,7 +1,7 @@
 { |samples, state, busses|
   (
     start: {
-      var synths, output, trackOutputs, trackLevelMeters;
+      var synths, output, trackOutputs;
       trackOutputs = busses.tracks.collect({ |track| track.output });
       output = { Out.ar(0, Mix.ar(In.ar(trackOutputs, 2))) }.play;
       s.sync;
@@ -32,12 +32,13 @@
         \lpfResonance, busses.tracks[i].lpfResonance
       )});
       s.sync;
-      trackLevelMeters = trackOutputs.do({ |bus, i|
-        var replyAddr = '/track_level_' ++ i;
-        replyAddr.postln;
-        { 
-          var sig = In.ar(bus, 2);
-          SendPeakRMS.kr(sig, 20, 3, replyAddr);
+      // Send messages for GUI monitoring
+      busses.tracks.do({ |track, i|
+        var playheadAddr = '/track_playhead_' ++ i;
+        var levelAddr = '/track_level_' ++ i;
+        {
+          SendReply.kr(Impulse.kr(50), playheadAddr, In.kr(track.playhead));
+          SendPeakRMS.kr(In.ar(track.output, 2), 20, 3, levelAddr);
         }.play(addAction: \addToTail);
       });
     }
