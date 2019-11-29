@@ -1,11 +1,11 @@
-{ |samples, state, busses|
+{ |config, samples, state, busses|
   (
     start: {
       var synths, output, trackOutputs;
       trackOutputs = busses.tracks.collect({ |track| track.output });
       output = { Out.ar(0, Mix.ar(In.ar(trackOutputs, 2))) }.play;
       s.sync;
-      synths = Array.fill(3, { |i|
+      synths = Array.fill(config.numTracks, { |i|
         var track = state.tracks[i];
         var trackBusses = busses.tracks[i];
         Synth.new(\windowLooper, [

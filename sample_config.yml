@@ -2,9 +2,10 @@ baseDir: /home/<your_username>/path/to/repo
 morphAddr:
   host: localhost
   port: 5050
-enableMIDI: true
-enableGUI: true
-freqscopeActive: false
-debug: true
-MFTDeviceName: Midi Fighter Twister
-MFTPortName: Midi Fighter Twister
+enableMIDI: 1
+enableGUI: 1
+freqscopeActive: 0
+debug: 1
+mftDeviceName: Midi Fighter Twister
+mftPortName: Midi Fighter Twister
+numTracks: 3

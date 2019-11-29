@@ -15,7 +15,7 @@ var createVolumeGUI = "./volume.scd".loadRelative[0];
     sampler.setTrackParameter(i, \lpfCutoff, cutoff);
     sampler.setTrackParameter(i, \lpfResonance, resonance);
   };
-  filter = createFilterGUI.value(filterView, busses.prefilter, busses.output, filterAction, config["freqscopeActive"]);
+  filter = createFilterGUI.value(filterView, busses.prefilter, busses.output, filterAction, config.freqscopeActive);
 
   looperAction = { |offset, window|
     sampler.setTrackParameter(i, \offset, offset);

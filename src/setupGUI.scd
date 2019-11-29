@@ -5,12 +5,12 @@ var createTrackGUI = "./gui/track.scd".loadRelative[0];
   var bounds = Rect(100, 700, 1600, 800);
   var parentWindow = Window("bITMangler9000", bounds);
   var notifications;
-  var trackViews = { View.new() } ! 3;
+  var trackViews = { View.new() } ! config.numTracks;
 
   parentWindow.layout = VLayout(*trackViews);
   parentWindow.front;
 
-  tracks = 3.collect{ |i|
+  tracks = config.numTracks.collect{ |i|
     createTrackGUI.value(config, trackViews[i], sampler, busses.tracks[i], i);
   };
 

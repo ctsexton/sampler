@@ -20,7 +20,7 @@
   MIDIClient.init;
   MIDIIn.connectAll;
 
-  mft = MFT(MIDIEndPoint(config["MFTDeviceName"], config["MFTPortName"]));
+  mft = MFT(MIDIEndPoint(config.mftDeviceName, config.mftPortName));
 
   mft.gridResponderFunction = { |self, event|
     if (event.y < 3, {

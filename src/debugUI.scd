@@ -1,4 +1,4 @@
-{ |config, sampler, eventBroker|
+{ |eventBroker|
   var ui = (
     notify: { |self, msg|
       msg.postln;
