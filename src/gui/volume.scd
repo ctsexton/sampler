@@ -24,5 +24,10 @@
   slider.value = 0;
   slider.action = { |obj|
     action.value(obj.value);
-  }
+  };
+  (
+    setVolume: { |self, newVolume|
+      slider.value = newVolume;
+    }
+  )
 }
