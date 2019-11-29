@@ -14,7 +14,7 @@
   started = false;
   offset = 0;
   window = 1;
-  view = SoundFileView(parent, Point(parent.bounds.width, parent.bounds.height));
+  view = SoundFileView(parent, Rect(0, 0, parent.bounds.width, parent.bounds.height));
 
   view.resize = 5;
   view.gridOn = false;
