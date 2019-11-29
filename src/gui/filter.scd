@@ -1,13 +1,16 @@
 { |window, preFilterBus, postFilterBus, action, freqscopeActive|
-  var cutoff = 0.75;
+  var cutoff = 1;
   var resonance = 0.5;
   var q = 0;
   var clicked = false;
   var relativeWhere;
   var v = UserView(window, Rect(0, 0, window.bounds.width, window.bounds.height));
+  var cutoffWidthBound = window.bounds.width - 40;
+  var cutoffLeftBound = 20;
+  var cutoffRightBound = window.bounds.width - 20;
   var freqscope = FreqScopeView.response(parent: window, bounds: Point(v.bounds.width, v.bounds.height), bus1: preFilterBus, bus2: postFilterBus);
   var radius = 7;
-  var grabber = Rect(v.bounds.left + v.bounds.width * cutoff, (v.bounds.height * (1 - resonance)) - radius, radius * 2, radius * 2);
+  var grabber = Rect(cutoffLeftBound + cutoffWidthBound * cutoff, (v.bounds.height * (1 - resonance)) - radius, radius * 2, radius * 2);
   var lpfSlope = 1.25;
 
   var drawGrabber = { |grabber|
@@ -32,7 +35,8 @@
   };
 
   v.onResize = { |newView|
-    grabber.left = newView.bounds.left + newView.bounds.width * cutoff;
+    var cutoffWidthBound = newView.bounds.width - 40;
+    grabber.left = newView.bounds.left + cutoffWidthBound * cutoff;
     grabber.top = (newView.bounds.height * (1 - resonance)) - radius;
   };
 
@@ -54,7 +58,7 @@
   v.mouseMoveAction = { |v, x, y|
     if (clicked, {
       grabber.origin = Point(x, y) - relativeWhere;
-      cutoff = x / v.bounds.width;
+      cutoff = x / cutoffWidthBound;
       resonance = 1 - (y / v.bounds.height);
       action.value(cutoff, resonance);
       window.refresh;
@@ -73,7 +77,7 @@
       if (clicked == false, {
         cutoff = newCutoff;
         {
-          grabber.left = v.bounds.left + (v.bounds.width - 10) * cutoff - radius;
+          grabber.left = cutoffLeftBound + cutoffWidthBound * cutoff - radius;
           window.refresh;
         }.defer;
       })
