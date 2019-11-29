@@ -1,17 +1,19 @@
 var createFilterGUI = "./gui/filter.scd".loadRelative[0];
 var createLooperGUI = "./gui/looper.scd".loadRelative[0];
+var createVolumeGUI = "./gui/volume.scd".loadRelative[0];
 
 { |config, sampler, eventBroker, busses|
   var ui;
-  var filterGUIs, looperGUIs;
+  var filterGUIs, looperGUIs, volumeGUIs;
   var freqscope;
   var bounds = Rect(100, 700, 1600, 800);
   var parentWindow = Window("bITMangler9000", bounds);
   var filterViews = { View.new() } ! 3;
   var looperViews = { View.new() } ! 3;
+  var volumeViews = { View.new().maxWidth_(40) } ! 3;
   var notifications;
 
-  parentWindow.layout = HLayout(VLayout(*filterViews), VLayout(*looperViews));
+  parentWindow.layout = HLayout(VLayout(*filterViews), VLayout(*looperViews), VLayout(*volumeViews));
 
   filterGUIs = 3.collect({ |i|
     var filterAction = { |cutoff, resonance|
@@ -26,6 +28,12 @@ var createLooperGUI = "./gui/looper.scd".loadRelative[0];
       sampler.setTrackParameter(i, \window, window);
     };
     createLooperGUI.value(looperViews[i], busses.tracks[i].playhead, action);
+  });
+  volumeGUIs = 3.collect({ |i|
+    var action = { |volume|
+      sampler.setTrackParameter(i, \volume, volume);
+    };
+    createVolumeGUI.value(volumeViews[i], action, \track_level_ ++ i);
   });
   
   looperGUIs.do({ |item| item.startAnimation });

@@ -1,9 +1,9 @@
 { |samples, state, busses|
   (
     start: {
-      var synths, output, trackOutputs;
+      var synths, output, trackOutputs, trackLevelMeters;
       trackOutputs = busses.tracks.collect({ |track| track.output });
-      output = { Out.ar(0, Mix.ar(In.ar(trackOutputs))!2) }.play;
+      output = { Out.ar(0, Mix.ar(In.ar(trackOutputs, 2))) }.play;
       s.sync;
       synths = Array.fill(3, { |i|
         var track = state.tracks[i];
@@ -31,6 +31,15 @@
         \lpfCutoff, busses.tracks[i].lpfCutoff,
         \lpfResonance, busses.tracks[i].lpfResonance
       )});
+      s.sync;
+      trackLevelMeters = trackOutputs.do({ |bus, i|
+        var replyAddr = '/track_level_' ++ i;
+        replyAddr.postln;
+        { 
+          var sig = In.ar(bus, 2);
+          SendPeakRMS.kr(sig, 20, 3, replyAddr);
+        }.play(addAction: \addToTail);
+      });
     }
   )
 }
