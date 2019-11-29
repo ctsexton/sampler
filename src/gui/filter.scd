@@ -34,6 +34,14 @@
     Pen.stroke;
   };
 
+  var setGrabber = { |v, x, y|
+    grabber.origin = Point(x, y);
+    cutoff = x / cutoffWidthBound;
+    resonance = 1 - (y / v.bounds.height);
+    action.value(cutoff, resonance);
+    window.refresh;
+  };
+
   v.onResize = { |newView|
     var cutoffWidthBound = newView.bounds.width - 40;
     grabber.left = newView.bounds.left + cutoffWidthBound * cutoff;
@@ -49,19 +57,13 @@
   };
 
   v.mouseDownAction = { |v, x, y|
-    if (grabber.contains(Point(x, y)), {
-      clicked = true;
-      relativeWhere = Point(x, y) - grabber.origin;
-    });
+    clicked = true;
+    setGrabber.value(v, x, y);
   };
 
   v.mouseMoveAction = { |v, x, y|
     if (clicked, {
-      grabber.origin = Point(x, y) - relativeWhere;
-      cutoff = x / cutoffWidthBound;
-      resonance = 1 - (y / v.bounds.height);
-      action.value(cutoff, resonance);
-      window.refresh;
+      setGrabber.value(v, x, y);
     });
   };
 
