@@ -11,7 +11,7 @@ var createRateGUI = "./rate.scd".loadRelative[0];
   var filterView = View.new();
   var looperView = View.new();
   var volumeView = View.new().maxWidth_(40);
-  window.layout = HLayout(rateView, filterView, looperView, volumeView);
+  window.layout = HLayout(rateView, looperView, filterView, volumeView);
 
   rateAction = { |rate|
     sampler.setTrackParameter(i, \rate, rate);
