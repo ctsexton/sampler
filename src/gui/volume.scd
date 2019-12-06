@@ -30,7 +30,7 @@
 
   (
     setVolume: { |self, newVolume|
-      slider.value = newVolume;
+      { slider.value = newVolume }.defer
     }
   )
 }

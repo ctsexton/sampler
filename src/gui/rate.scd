@@ -5,7 +5,7 @@
   rate.action = { |obj| action.value(obj.value.linlin(0, 1, -2, 2)) };
   (
     setRate: { |self, newRate|
-      rate.value = newRate;
+      { rate.value = newRate }.defer
     }
   )
 }

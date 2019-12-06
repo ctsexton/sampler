@@ -20,7 +20,8 @@ var createTrackGUI = "./gui/track.scd".loadRelative[0];
     lpfResonance: { |msg| tracks[msg.index].filter.setResonance(msg.normalized) },
     offset: { |msg| tracks[msg.index].looper.setOffset(msg.normalized) },
     window: { |msg| tracks[msg.index].looper.setWindow(msg.normalized) },
-    sampleIndex: { |msg| tracks[msg.index].looper.setSoundfile(msg.soundfile) }
+    sampleIndex: { |msg| tracks[msg.index].looper.setSoundfile(msg.soundfile) },
+    volume: { |msg| tracks[msg.index].volume.setVolume(msg.normalized) }
   );
 
   ui = (
