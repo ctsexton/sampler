@@ -9,6 +9,7 @@ var synthDefs = ["./synthdefs/sampler.scd".loadRelative[0]];
 var getSamples = "./samples.scd".loadRelative[0];
 var createSynth = "./synth.scd".loadRelative[0];
 var createBusses = "./busses.scd".loadRelative[0];
+var setupOSC = "./osc.scd".loadRelative[0];
 
 var main = { |config|
   var synth;
@@ -28,6 +29,7 @@ var main = { |config|
   if (config.enableDebug, {
     setupDebugUI.value(eventBroker);
   });
+  setupOSC.value(config, store, eventBroker);
   store.initialize;
   synth = createSynth.value(config, samples, state, busses);
   synth.start;
