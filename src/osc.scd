@@ -1,18 +1,26 @@
-{ |config, sampler, eventBroker|
+{ |config, sampler, eventBroker, state|
   var ui;
-  var funcs;
+  var funcs = [];
+  var netAddr = NetAddr.new(config.oscOutAddress, config.oscOutPort);
   
-  thisProcess.openUDPPort(5005);
-  funcs = 4.collect({ |i|
-    var address = '/2/fader' ++ (i + 2).asString;
-    OSCFunc.new({ |msg| sampler.setTrackParameter(i, 'volume', msg[1]) }, address);
+  thisProcess.openUDPPort(config.oscInPort);
+
+  state.tracks.do({|trk, i|
+    trk.keysDo({|key|
+      var addr = '/track/' ++ i ++ '/' ++ key;
+      var oscFunc = OSCFunc.new({ |msg|
+        sampler.setTrackParameter(i, key, msg[1])
+      }, addr);
+      funcs = funcs.add(oscFunc);
+    });
   });
+  funcs.postln;
   
   ui = (
     notify: { |self, msg|
-      if (msg.topic == \track, {
-        msg.postln;
-      })
+      netAddr.sendMsg(
+        '/' ++ msg.topic ++ '/' ++ msg.index ++ '/' ++ msg.param,
+        msg.normalized);
     }
   );
   eventBroker.subscribe([\track], ui)

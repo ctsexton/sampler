@@ -9,3 +9,6 @@ debug: 1
 mftDeviceName: Midi Fighter Twister
 mftPortName: Midi Fighter Twister
 numTracks: 3
+oscInPort: 5005
+oscOutAddress: 192.168.42.129
+oscOutPort: 5006

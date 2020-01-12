@@ -35,6 +35,7 @@
     busses.master[param].set(clippedValue);
     eventBroker.publish((
       topic: \master,
+      index: 0,
       param: param,
       val: state.master[param],
       normalized: normalizedValue

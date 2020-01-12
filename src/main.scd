@@ -29,7 +29,7 @@ var main = { |config|
   if (config.enableDebug, {
     setupDebugUI.value(eventBroker);
   });
-  setupOSC.value(config, store, eventBroker);
+  setupOSC.value(config, store, eventBroker, state);
   store.initialize;
   synth = createSynth.value(config, samples, state, busses);
   synth.start;

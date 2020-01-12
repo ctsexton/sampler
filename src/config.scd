@@ -12,6 +12,9 @@
     enableDebug: doc["debug"].asInteger.asBoolean,
     mftDeviceName: doc["mftDeviceName"],
     mftPortName: doc["mftPortName"],
-    numTracks: doc["numTracks"].asInteger
+    numTracks: doc["numTracks"].asInteger,
+    oscInPort: doc["oscInPort"].asInteger,
+    oscOutAddress: doc["oscOutAddress"],
+    oscOutPort: doc["oscOutPort"].asInteger
   );
 }
