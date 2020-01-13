@@ -56,7 +56,7 @@
         ),
         mute: (
           default: false,
-          type: \binary
+          type: \boolean
         ),
         sampleIndex: (
           default: 0,
@@ -159,7 +159,7 @@
       ),
       mute: (
         default: false,
-        type: \binary
+        type: \boolean
       ),
       volume: (
         default: 0,
@@ -176,7 +176,7 @@
         ),
         mute: (
           default: false,
-          type: \binary
+          type: \boolean
         )
       )
     )
