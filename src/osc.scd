@@ -14,7 +14,13 @@
       funcs = funcs.add(oscFunc);
     });
   });
-  funcs.postln;
+  state.master.keysDo({|key|
+    var addr = '/master/0/' ++ key;
+    var oscFunc = OSCFunc.new({|msg|
+      sampler.setMasterParameter(key, msg[1]);
+    }, addr);
+    funcs = funcs.add(oscFunc);
+  });
   
   ui = (
     notify: { |self, msg|
@@ -23,5 +29,5 @@
         msg.normalized);
     }
   );
-  eventBroker.subscribe([\track], ui)
+  eventBroker.subscribe([\track, \master], ui)
 }

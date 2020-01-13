@@ -10,7 +10,8 @@
           hpfCutoff: 0,
           volume: 0,
           sampleIndex: 0,
-          playhead: 0
+          playhead: 0,
+          mute: 0
         )
       }
     ),
