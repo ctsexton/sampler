@@ -4,5 +4,5 @@
       msg.postln;
     }
   );
-  eventBroker.subscribe([\track, \master], ui);
+  eventBroker.subscribe([\all], ui);
 }

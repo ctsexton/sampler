@@ -4,7 +4,7 @@
   var parameters = ();
   var setters = (
     float: {|address, parameterConfig|
-      {|val|
+      {|self, val|
         var clippedValue = val.clip(parameterConfig.minimum, parameterConfig.maximum);
         var normalizedValue = clippedValue.linlin(parameterConfig.minimum, parameterConfig.maximum, 0, 1);
         state[address] = clippedValue;
@@ -17,7 +17,7 @@
       }
     },
     integer: {|address, parameterConfig|
-      {|val|
+      {|self, val|
         var clippedValue = val.clip(parameterConfig.minimum, parameterConfig.maximum).asInteger;
         var normalizedValue = clippedValue.linlin(parameterConfig.minimum, parameterConfig.maximum, 0, 1);
         state[address] = clippedValue;
@@ -30,8 +30,10 @@
       }
     },
     boolean: {|address, parameterConfig|
-      {|val|
+      {|self, val|
         var stateVal, busVal;
+        address.postln;
+        val.postln;
         if (val, {
           stateVal = true;
           busVal = 1;
@@ -52,35 +54,36 @@
 
   var parameterTypes = [\float, \integer, \boolean].asSet;
 
-  var traverse = {|object, address=""|
-    if (object.isKindOf(Dictionary), {
+  var traverse = {|object, address=''| if (object.isKindOf(Dictionary), {
       if (parameterTypes.includes(object.type), {
-        address.postln;
         busses[address] = Bus.control().set(object.default);
         state[address] = object.default;
         parameters[address] = (
-          get: state[address],
-          set: setters[object.type].value(address, object),
-          reset: { |self| self.set(object.default) }
+          getParameter: { state[address] },
+          setParameter: setters[object.type].value(address, object),
+          resetParameter: { |self| self.set(object.default) }
         );
       }, {
         object.keysValuesDo({|key, val|
-          var newAddress = address ++ "/" ++ key;
-          traverse.value(val, newAddress);
+          var newAddress = address ++ '/' ++ key;
+          traverse.value(val, newAddress.asSymbol);
         })
       })
     }, {
       object.do({|item, i|
-        var newAddress = address ++ "/" ++ i.asString;
-        traverse.value(item, newAddress);
+        var newAddress = address ++ '/' ++ i.asString;
+        traverse.value(item, newAddress.asSymbol);
       })
     })
   };
   traverse.value(initialParameters);
 
   (
-    get: { |self, address| parameters[address][\get].value() },
-    reset: { |self, address| parameters[address].reset() },
-    set: { |self, address, val| parameters[address][\set].value(val) }
+    getParameter: { |self, address| parameters[address].getParameter() },
+    resetParameter: { |self, address| parameters[address].resetParameter() },
+    setParameter: { |self, address, val| parameters[address].setParameter(val) },
+    initialize: { parameters.do({|item| item.reset() })},
+    listParameters: { parameters.keys },
+    getBus: { |self, address| busses[address] }
   )
 }

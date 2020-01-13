@@ -1,11 +1,17 @@
-{ |topics|
+{
   var subscribersByTopic = ();
-  topics.do({ |topic|
-    subscribersByTopic.put(topic, []);
-  });
   (
+    addTopic: { |self, topic| subscribersByTopic.put(topic, []) },
+    addTopics: { |self, topics|
+      topics.do({ |topic|
+        subscribersByTopic.put(topic, []);
+      })
+    },
     publish: { |self, event|
       subscribersByTopic.at(event.topic).do({ |subscriber|
+        subscriber.notify(event);
+      });
+      subscribersByTopic.at(\all).do({ |subscriber|
         subscriber.notify(event);
       })
     },

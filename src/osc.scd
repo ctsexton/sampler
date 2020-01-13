@@ -1,33 +1,20 @@
-{ |config, sampler, eventBroker, state|
+{ |config, controller, eventBroker|
   var ui;
   var funcs = [];
   var netAddr = NetAddr.new(config.oscOutAddress, config.oscOutPort);
   
   thisProcess.openUDPPort(config.oscInPort);
 
-  state.tracks.do({|trk, i|
-    trk.keysDo({|key|
-      var addr = '/track/' ++ i ++ '/' ++ key;
-      var oscFunc = OSCFunc.new({ |msg|
-        sampler.setTrackParameter(i, key, msg[1])
-      }, addr);
-      funcs = funcs.add(oscFunc);
-    });
-  });
-  state.master.keysDo({|key|
-    var addr = '/master/0/' ++ key;
-    var oscFunc = OSCFunc.new({|msg|
-      sampler.setMasterParameter(key, msg[1]);
-    }, addr);
-    funcs = funcs.add(oscFunc);
+  controller.listParameters().do({|address|
+    funcs = funcs.add(OSCFunc.new({ |msg|
+      controller.setParameter(address, msg[1])
+    }, address));
   });
   
   ui = (
-    notify: { |self, msg|
-      netAddr.sendMsg(
-        '/' ++ msg.topic ++ '/' ++ msg.index ++ '/' ++ msg.param,
-        msg.normalized);
+    notify: { |self, event|
+      netAddr.sendMsg(event.topic, event.normalized);
     }
   );
-  eventBroker.subscribe([\track, \master], ui)
+  eventBroker.subscribe(controller.listParameters(), ui)
 }
