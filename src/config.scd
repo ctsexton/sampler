@@ -8,6 +8,7 @@
     ),
     enableMIDI: doc["enableMIDI"].asInteger.asBoolean,
     enableGUI: doc["enableGUI"].asInteger.asBoolean,
+    enableOSC: doc["enableOSC"].asInteger.asBoolean,
     freqscopeActive: doc["freqscopeActive"].asInteger.asBoolean,
     enableDebug: doc["debug"].asInteger.asBoolean,
     mftDeviceName: doc["mftDeviceName"],
