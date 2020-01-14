@@ -2,9 +2,10 @@ var createFilterGUI = "./filter.scd".loadRelative[0];
 var createLooperGUI = "./looper.scd".loadRelative[0];
 var createVolumeGUI = "./volume.scd".loadRelative[0];
 var createRateGUI = "./rate.scd".loadRelative[0];
+var createAddress = "../util/createAddress.scd".loadRelative[0];
 
 {
-  |config, window, sampler, busses, trackIndex|
+  |config, window, controller, trackIndex|
   var rate, rateAction, filter, filterAction, looper, looperAction, volume, volumeAction;
   var i = trackIndex;
   var rateView = View.new().maxWidth_(50);
@@ -13,27 +14,45 @@ var createRateGUI = "./rate.scd".loadRelative[0];
   var volumeView = View.new().maxWidth_(40);
   window.layout = HLayout(rateView, looperView, filterView, volumeView);
 
-  rateAction = { |rate|
-    sampler.setTrackParameter(i, \rate, rate);
+  rateAction = { |address|
+    { |rate|
+      controller.setParameter(address, rate);
+    }
   };
-  rate = createRateGUI.value(rateView, rateAction);
+  rate = createRateGUI.value(rateView, rateAction.value(createAddress.value(['sampler', trackIndex, 'rate'])));
 
-  filterAction = { |cutoff, resonance|
-    sampler.setTrackParameter(i, \lpfCutoff, cutoff);
-    sampler.setTrackParameter(i, \lpfResonance, resonance);
+  filterAction = { |cutoffAddress, resonanceAddress|
+    { |cutoff, resonance|
+      controller.setParameter(cutoffAddress, cutoff);
+      controller.setParameter(resonanceAddress, resonance);
+    }
   };
-  filter = createFilterGUI.value(filterView, busses.prefilter, busses.output, filterAction, config.freqscopeActive);
+  filter = createFilterGUI.value(
+    filterView,
+    Bus.audio(),
+    Bus.audio(),
+    filterAction.value(createAddress.value(['sampler', trackIndex, 'lpf', 'cutoff']), createAddress.value(['sampler', trackIndex, 'lpf', 'resonance'])),
+    config.freqscopeActive
+  );
 
-  looperAction = { |offset, window|
-    sampler.setTrackParameter(i, \offset, offset);
-    sampler.setTrackParameter(i, \window, window);
+  looperAction = { |offsetAddress, windowAddress|
+    { |offset, window|
+      controller.setParameter(offsetAddress, offset);
+      controller.setParameter(windowAddress, window);
+    }
   };
-  looper = createLooperGUI.value(looperView, \track_playhead_ ++ i, looperAction);
+  looper = createLooperGUI.value(
+    looperView,
+    \track_playhead_ ++ i,
+    looperAction.value(createAddress.value(['sampler', trackIndex, 'offset']), createAddress.value(['sampler', trackIndex, 'window']))
+  );
 
-  volumeAction = { |volume|
-    sampler.setTrackParameter(i, \volume, volume);
+  volumeAction = { |address|
+    { |volume|
+      controller.setParameter(address, volume);
+    }
   };
-  volume = createVolumeGUI.value(volumeView, volumeAction, \track_level_ ++ i);
+  volume = createVolumeGUI.value(volumeView, volumeAction.value(createAddress.value(['sampler', trackIndex, 'volume'])), \track_level_ ++ i);
 
   looper.startAnimation;
 

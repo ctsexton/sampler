@@ -1,35 +1,32 @@
 var createTrackGUI = "./track.scd".loadRelative[0];
+var createAddress = "../util/createAddress.scd".loadRelative[0];
 
-{ |config, sampler, eventBroker, busses|
+{ |config, controller, eventRouter|
   var ui, tracks;
   var bounds = Rect(100, 700, 1600, 800);
-  var parentWindow = Window("bITMangler9000", bounds);
+  var parentWindow = Window("Dishing Wachine", bounds);
   var notifications;
   var trackViews = { View.new() } ! config.numTracks;
+  var subscribe = { |addressAsArray, action|
+    var address = createAddress.value(addressAsArray);
+    var ui = (
+      notify: { |self, msg| action.value(msg) }
+    );
+    eventRouter.subscribe([address], ui)
+  };
 
   parentWindow.layout = VLayout(*trackViews);
   parentWindow.front;
 
   tracks = config.numTracks.collect{ |i|
-    createTrackGUI.value(config, trackViews[i], sampler, busses.tracks[i], i);
+    var track = createTrackGUI.value(config, trackViews[i], controller, i);
+    subscribe.value(['sampler', i, 'rate'], { |msg| track.rate.setRate(msg.normalized) });
+    subscribe.value(['sampler', i, 'lpf', 'cutoff'], { |msg| track.filter.setCutoff(msg.normalized) });
+    subscribe.value(['sampler', i, 'lpf', 'resonance'], { |msg| track.filter.setResonance(msg.normalized) });
+    subscribe.value(['sampler', i, 'offset'], { |msg| track.looper.setOffset(msg.normalized) });
+    subscribe.value(['sampler', i, 'window'], { |msg| track.looper.setWindow(msg.normalized) });
+    subscribe.value(['sampler', i, 'sampleIndex'], { |msg| track.looper.setSoundfile(msg.normalized) });
+    subscribe.value(['sampler', i, 'volume'], { |msg| track.volume.setVolume(msg.normalized) });
+    track;
   };
-
-  notifications = (
-    rate: { |msg| tracks[msg.index].rate.setRate(msg.normalized) },
-    lpfCutoff: { |msg| tracks[msg.index].filter.setCutoff(msg.normalized) },
-    lpfResonance: { |msg| tracks[msg.index].filter.setResonance(msg.normalized) },
-    offset: { |msg| tracks[msg.index].looper.setOffset(msg.normalized) },
-    window: { |msg| tracks[msg.index].looper.setWindow(msg.normalized) },
-    sampleIndex: { |msg| tracks[msg.index].looper.setSoundfile(msg.soundfile) },
-    volume: { |msg| tracks[msg.index].volume.setVolume(msg.normalized) }
-  );
-
-  ui = (
-    notify: { |self, msg|
-      if (msg.topic == \track && notifications.includesKey(msg.param), {
-        notifications[msg.param].value(msg);
-      })
-    }
-  );
-  eventBroker.subscribe([\track, \master], ui);
 }
