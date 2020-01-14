@@ -1,4 +1,4 @@
-{ |config, controller, eventBroker|
+{ |config, controller, eventRouter|
   var ui;
   var funcs = [];
   var netAddr = NetAddr.new(config.oscOutAddress, config.oscOutPort);
@@ -13,8 +13,8 @@
   
   ui = (
     notify: { |self, event|
-      netAddr.sendMsg(event.topic, event.normalized);
+      netAddr.sendMsg(event.address, event.normalized);
     }
   );
-  eventBroker.subscribe(controller.listParameters(), ui)
+  eventRouter.subscribe(controller.listParameters(), ui)
 }
