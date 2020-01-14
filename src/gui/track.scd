@@ -43,7 +43,7 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
   };
   looper = createLooperGUI.value(
     looperView,
-    \track_playhead_ ++ i,
+    createAddress.value(['sampler', trackIndex, 'playhead']),
     looperAction.value(createAddress.value(['sampler', trackIndex, 'offset']), createAddress.value(['sampler', trackIndex, 'window']))
   );
 
@@ -52,7 +52,11 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
       controller.setParameter(address, volume);
     }
   };
-  volume = createVolumeGUI.value(volumeView, volumeAction.value(createAddress.value(['sampler', trackIndex, 'volume'])), \track_level_ ++ i);
+  volume = createVolumeGUI.value(
+    volumeView,
+    volumeAction.value(createAddress.value(['sampler', trackIndex, 'volume'])), 
+    createAddress.value(['sampler', trackIndex, 'level'])
+  );
 
   looper.startAnimation;
 
