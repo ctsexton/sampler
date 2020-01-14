@@ -1,6 +1,6 @@
 var createConfig = "./config.scd".loadRelative[0];
 var createEventBroker = "./eventRouter.scd".loadRelative[0];
-var setupMidiDevices = "./setupMidiDevices.scd".loadRelative[0];
+var setupMidiDevices = "./midi/setup.scd".loadRelative[0];
 var setupGUI = "./gui/setup.scd".loadRelative[0];
 var setupDebugUI = "./debugUI.scd".loadRelative[0];
 var synthDefs = ["./synthdefs/sampler.scd".loadRelative[0]];
