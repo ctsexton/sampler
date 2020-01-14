@@ -8,14 +8,14 @@ var getSamples = "./samples.scd".loadRelative[0];
 var createSynth = "./synth.scd".loadRelative[0];
 var setupOSC = "./osc.scd".loadRelative[0];
 var createParameters = "./parameters.scd".loadRelative[0];
-var createController = "./controller/router.scd".loadRelative[0];
+var createController = "./core/controller.scd".loadRelative[0];
 
 var main = { |config|
   var synth;
   var eventBroker = createEventBroker.value();
   var samples = getSamples.value(config);
-  var parameters = createParameters.value(config.numTracks);
-  var controller = createController.value(parameters, eventBroker);
+  var parameterTree = createParameters.value(config.numTracks);
+  var controller = createController.value(parameterTree, eventBroker);
   eventBroker.addTopics(controller.listParameters());
   /* if (config.enableMIDI, { */
   /*   setupMidiDevices.value(config, store, eventBroker); */

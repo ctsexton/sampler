@@ -1,4 +1,4 @@
-{ |initialParameters, eventBroker|
+{ |parameterTree, eventBroker|
   var busses = ();
   var state = ();
   var parameters = ();
@@ -76,7 +76,7 @@
       })
     })
   };
-  traverse.value(initialParameters);
+  traverse.value(parameterTree);
 
   (
     getParameter: { |self, address| parameters[address].getParameter() },
