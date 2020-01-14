@@ -1,7 +1,7 @@
 var createConfig = "./config.scd".loadRelative[0];
 var createEventBroker = "./eventRouter.scd".loadRelative[0];
 var setupMidiDevices = "./setupMidiDevices.scd".loadRelative[0];
-var setupGUI = "./setupGUI.scd".loadRelative[0];
+var setupGUI = "./gui/setup.scd".loadRelative[0];
 var setupDebugUI = "./debugUI.scd".loadRelative[0];
 var synthDefs = ["./synthdefs/sampler.scd".loadRelative[0]];
 var getSamples = "./samples.scd".loadRelative[0];
@@ -20,9 +20,9 @@ var main = { |config|
   /* if (config.enableMIDI, { */
   /*   setupMidiDevices.value(config, store, eventRouter); */
   /* }); */
-  /* if (config.enableGUI, { */
-  /*   setupGUI.value(config, controller, eventRouter); */
-  /* }); */
+  if (config.enableGUI, {
+    setupGUI.value(config, controller, eventRouter);
+  });
   if (config.enableDebug, {
     setupDebugUI.value(eventRouter);
   });
