@@ -1,5 +1,5 @@
 var createConfig = "./config.scd".loadRelative[0];
-var createEventBroker = "./eventRouter.scd".loadRelative[0];
+var createEventBroker = "./core/eventRouter.scd".loadRelative[0];
 var setupMidiDevices = "./midi/setup.scd".loadRelative[0];
 var setupGUI = "./gui/setup.scd".loadRelative[0];
 var setupDebugUI = "./debugUI.scd".loadRelative[0];
@@ -7,7 +7,7 @@ var synthDefs = ["./synthdefs/sampler.scd".loadRelative[0]];
 var getSamples = "./samples.scd".loadRelative[0];
 var createSynth = "./synth.scd".loadRelative[0];
 var setupOSC = "./osc/setup.scd".loadRelative[0];
-var createParameters = "./parameters.scd".loadRelative[0];
+var createParameters = "./core/parameters.scd".loadRelative[0];
 var createController = "./core/controller.scd".loadRelative[0];
 
 var main = { |config|
