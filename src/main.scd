@@ -1,5 +1,5 @@
 var createConfig = "./config.scd".loadRelative[0];
-var createEventBroker = "./eventBroker.scd".loadRelative[0];
+var createEventBroker = "./eventRouter.scd".loadRelative[0];
 var setupMidiDevices = "./setupMidiDevices.scd".loadRelative[0];
 var setupGUI = "./setupGUI.scd".loadRelative[0];
 var setupDebugUI = "./debugUI.scd".loadRelative[0];
@@ -12,21 +12,21 @@ var createController = "./core/controller.scd".loadRelative[0];
 
 var main = { |config|
   var synth;
-  var eventBroker = createEventBroker.value();
+  var eventRouter = createEventBroker.value();
   var samples = getSamples.value(config);
   var parameterTree = createParameters.value(config.numTracks);
-  var controller = createController.value(parameterTree, eventBroker);
-  eventBroker.addTopics(controller.listParameters());
+  var controller = createController.value(parameterTree, eventRouter);
+  eventRouter.addAddresses(controller.listParameters());
   /* if (config.enableMIDI, { */
-  /*   setupMidiDevices.value(config, store, eventBroker); */
+  /*   setupMidiDevices.value(config, store, eventRouter); */
   /* }); */
   /* if (config.enableGUI, { */
-  /*   setupGUI.value(config, store, eventBroker, busses); */
+  /*   setupGUI.value(config, controller, eventRouter); */
   /* }); */
   if (config.enableDebug, {
-    setupDebugUI.value(eventBroker);
+    setupDebugUI.value(eventRouter);
   });
-  setupOSC.value(config, controller, eventBroker);
+  setupOSC.value(config, controller, eventRouter);
   synth = createSynth.value(config, samples, controller);
   synth.start;
 };
