@@ -21,12 +21,15 @@ var main = { |config|
   /*   setupMidiDevices.value(config, store, eventRouter); */
   /* }); */
   if (config.enableGUI, {
-    setupGUI.value(config, controller, eventRouter);
+    setupGUI.value(config, controller, eventRouter, samples);
   });
   if (config.enableDebug, {
     setupDebugUI.value(eventRouter);
   });
-  setupOSC.value(config, controller, eventRouter);
+  if (config.enableOSC, {
+    setupOSC.value(config, controller, eventRouter);
+  });
+  controller.initialize();
   synth = createSynth.value(config, samples, controller);
   synth.start;
 };
