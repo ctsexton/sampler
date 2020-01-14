@@ -1,4 +1,4 @@
-{ |parameterTree, eventBroker|
+{ |parameterTree, eventRouter|
   var busses = ();
   var state = ();
   var parameters = ();
@@ -9,7 +9,7 @@
         var normalizedValue = clippedValue.linlin(parameterConfig.minimum, parameterConfig.maximum, 0, 1);
         state[address] = clippedValue;
         busses[address].set(clippedValue);
-        eventBroker.publish((
+        eventRouter.publish((
           address: address,
           val: clippedValue,
           normalized: normalizedValue
@@ -22,7 +22,7 @@
         var normalizedValue = clippedValue.linlin(parameterConfig.minimum, parameterConfig.maximum, 0, 1);
         state[address] = clippedValue;
         busses[address].set(clippedValue);
-        eventBroker.publish((
+        eventRouter.publish((
           address: address,
           val: clippedValue,
           normalized: normalizedValue
@@ -43,7 +43,7 @@
         });
         state[address] = stateVal;
         busses[address].set(busVal);
-        eventBroker.publish((
+        eventRouter.publish((
           address: address,
           val: stateVal,
           normalized: busVal
@@ -61,7 +61,7 @@
         parameters[address] = (
           getParameter: { state[address] },
           setParameter: setters[object.type].value(address, object),
-          resetParameter: { |self| self.set(object.default) }
+          resetParameter: { |self| self.setParameter(object.default) }
         );
       }, {
         object.keysValuesDo({|key, val|
@@ -82,7 +82,7 @@
     getParameter: { |self, address| parameters[address].getParameter() },
     resetParameter: { |self, address| parameters[address].resetParameter() },
     setParameter: { |self, address, val| parameters[address].setParameter(val) },
-    initialize: { parameters.do({|item| item.reset() })},
+    initialize: { parameters.do({|item| item.resetParameter() })},
     listParameters: { parameters.keys },
     getBus: { |self, address| busses[address] }
   )
