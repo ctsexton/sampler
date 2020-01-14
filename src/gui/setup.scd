@@ -1,4 +1,4 @@
-var createTrackGUI = "./gui/track.scd".loadRelative[0];
+var createTrackGUI = "./track.scd".loadRelative[0];
 
 { |config, sampler, eventBroker, busses|
   var ui, tracks;
