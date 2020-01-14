@@ -1,7 +1,7 @@
 var createTrackGUI = "./track.scd".loadRelative[0];
 var createAddress = "../util/createAddress.scd".loadRelative[0];
 
-{ |config, controller, eventRouter|
+{ |config, controller, eventRouter, samples|
   var ui, tracks;
   var bounds = Rect(100, 700, 1600, 800);
   var parentWindow = Window("Dishing Wachine", bounds);
@@ -25,7 +25,7 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
     subscribe.value(['sampler', i, 'lpf', 'resonance'], { |msg| track.filter.setResonance(msg.normalized) });
     subscribe.value(['sampler', i, 'offset'], { |msg| track.looper.setOffset(msg.normalized) });
     subscribe.value(['sampler', i, 'window'], { |msg| track.looper.setWindow(msg.normalized) });
-    subscribe.value(['sampler', i, 'sampleIndex'], { |msg| track.looper.setSoundfile(msg.normalized) });
+    subscribe.value(['sampler', i, 'sampleIndex'], { |msg| track.looper.setSoundfile(samples[msg.val].soundfile) });
     subscribe.value(['sampler', i, 'volume'], { |msg| track.volume.setVolume(msg.normalized) });
     track;
   };
