@@ -49,10 +49,13 @@
           normalized: busVal
         ))
       }
+    },
+    read_only: {|address, parameterConfig|
+      {|self, val| val } // Do nothing for read only params
     }
   );
 
-  var parameterTypes = [\float, \integer, \boolean].asSet;
+  var parameterTypes = [\float, \integer, \boolean, \read_only].asSet;
 
   var traverse = {|object, address=''| if (object.isKindOf(Dictionary), {
       if (parameterTypes.includes(object.type), {

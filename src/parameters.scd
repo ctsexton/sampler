@@ -48,6 +48,10 @@
             type: \float
           )
         ),
+        level: (
+          type: \read_only,
+          default: 0
+        ),
         volume: (
           default: 0,
           minimum: 0,
@@ -65,10 +69,8 @@
           type: \integer
         ),
         playhead: (
-          default: 0,
-          minimum: 0,
-          maximum: 1,
-          type: \float
+          type: \read_only,
+          default: 0
         ),
         jitter: (
           default: 0,
