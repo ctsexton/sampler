@@ -46,7 +46,7 @@ var createAddress = "./util/createAddress.scd".loadRelative[0];
 
       synths = config.numTracks.collect({ |i|
         var params = paramMap.collect({ |item|
-          var address = ['', 'sampler', i, item.ext].join("/").asSymbol;
+          var address = createAddress.value(['sampler', i, item.ext]);
           [item.int, controller.getParameter(address)];
         });
 
@@ -61,7 +61,7 @@ var createAddress = "./util/createAddress.scd".loadRelative[0];
 
       synths.do({ |sampler, i|
         paramMap.do({ |item|
-          var address = ['', 'sampler', i, item.ext].join("/").asSymbol;
+          var address = createAddress.value(['sampler', i, item.ext]);
           sampler.map(item.int, controller.getBus(address));
         })
       });
