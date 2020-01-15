@@ -1,60 +1,92 @@
-{ |config, sampler, eventBroker|
+var createAddress = "../util/createAddress.scd".loadRelative[0];
+
+{ |config, controller, eventBroker|
   var ui;
   var mft;
-  var inputMap = [[\offset, \window], [\lpfCutoff, \lpfResonance], [\rate, \rate], [\volume, \volume]];
-  var outputMap = (
-    offset: [(x: 0, level: 0)],
-    window: [(x: 0, level: 1)],
-    lpfCutoff: [(x: 1, level: 0)],
-    lpfResonance: [(x: 1, level: 1)],
-    rate: [(x: 2, level: 0), (x: 2, level: 1)],
-    volume: [(x: 3, level: 0), (x: 3, level: 1)]
-  );
-  var masterCtrlsInOrder = [\reverb, \lpfCutoff, \hpfCutoff, \volume];
-  var masterCtrlXPositions = (
-    reverb: 0,
-    lpfCutoff: 1,
-    hpfCutoff: 2,
-    volume: 3
-  );
+
+  var increment = { |addressAsArray|
+    var address = createAddress.value(addressAsArray); 
+    { |inc|
+      var value = controller.getParameter(address);
+      controller.setParameter(address, value + (inc * 0.01));
+    }
+  };
+
+  var reset = { |addressAsArray|
+    var address = createAddress.value(addressAsArray);
+    { controller.resetParameter(address) }
+  };
+
+  var resetBulk = { |addressesAsArrays|
+    var addresses = addressesAsArrays.collect({ |arr| createAddress.value(arr) });
+    { addresses.do({ |addr| controller.resetParameter(addr) })};
+  };
+  
+  var reverse = { |addressAsArray|
+    var address = createAddress.value(addressAsArray);
+    { 
+      var value = controller.getParameter(address);
+      controller.setParameter(address, value * -1);
+    }
+  };
+
+  var encoderFunctions = config.numTracks.collect({ |i|
+    [
+      [
+        increment.value(['sampler', i, 'offset']),
+        increment.value(['sampler', i, 'window'])
+      ],
+      [
+        increment.value(['sampler', i, 'lpf', 'cutoff']),
+        increment.value(['sampler', i, 'lpf', 'resonance'])
+      ],
+      [
+        increment.value(['sampler', i, 'rate']),
+        increment.value(['sampler', i, 'rate'])
+      ],
+      [
+        increment.value(['sampler', i, 'volume']),
+        increment.value(['sampler', i, 'volume'])
+      ]
+    ]
+  });
+
+  var clickFunctions = config.numTracks.collect({ |i|
+    [
+      {},
+      {},
+      reverse.value(['sampler', i, 'rate']),
+      {}
+    ]
+  });
+
+  var doubleClickFunctions = config.numTracks.collect({ |i|
+    [
+      resetBulk.value([['sampler', i, 'offset'], ['sampler', i, 'window']]),
+      resetBulk.value([['sampler', i, 'lpf', 'cutoff'], ['sampler', i, 'lpf', 'resonance']]),
+      {},
+      reset.value(['sampler', i, 'volume'])
+    ]
+  });
+
   MIDIClient.init;
   MIDIIn.connectAll;
 
   mft = MFT(MIDIEndPoint(config.mftDeviceName, config.mftPortName));
 
   mft.gridResponderFunction = { |self, event|
-    if (event.y < 3, {
-      var param = inputMap[event.x][event.level];
-      var inc = event.vel * 0.01;
-      var trackIndex = event.y;
-      var currentValue = sampler.getTrackParameter(trackIndex, param);
-      var newValue = currentValue + inc;
-      sampler.setTrackParameter(trackIndex, param, newValue);
-    }, {
-      var param = masterCtrlsInOrder[event.x];
-      var inc = event.vel * 0.01;
-      var currentValue = sampler.getMasterParameter(param);
-      var newValue = currentValue + inc;
-      sampler.setMasterParameter(param, newValue);
-    })
+    encoderFunctions[event.y][event.x][event.level].value(event.vel);
   };
 
-  mft.onDoubleClick = { |self, event|
-    if (event.y < 3, {
-      var params = inputMap[event.x].asSet;
-      var trackIndex = event.y;
-      params.do({ |param| sampler.resetTrackParameter(trackIndex, param)});
-    })
-  };
+  mft.onDoubleClick = { |self, event| doubleClickFunctions[event.y][event.x].value() };
 
   mft.onClick = { |self, event|
-    if (event.y < 3 && inputMap[event.x][0] == \rate && event.vel == 1, {
-      var trackIndex = event.y;
-      var currentValue = sampler.getTrackParameter(trackIndex, \rate);
-      sampler.setTrackParameter(trackIndex, \rate, currentValue * -1);
+    if (event.vel == 1, {
+      clickFunctions[event.y][event.x].value()
     })
   };
 
+  /*
   ui = (
     notify: { |self, msg|
       if (msg.topic == \track, {
@@ -76,4 +108,5 @@
     }
   );
   eventBroker.subscribe([\track, \master], ui);
+  */
 }

@@ -17,9 +17,9 @@ var main = { |config|
   var parameterTree = createParameters.value(config.numTracks);
   var controller = createController.value(parameterTree, eventRouter);
   eventRouter.addAddresses(controller.listParameters());
-  /* if (config.enableMIDI, { */
-  /*   setupMidiDevices.value(config, store, eventRouter); */
-  /* }); */
+  if (config.enableMIDI, {
+    setupMidiDevices.value(config, controller, eventRouter);
+  });
   if (config.enableGUI, {
     setupGUI.value(config, controller, eventRouter, samples);
   });
