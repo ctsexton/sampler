@@ -1,8 +1,15 @@
 var createAddress = "../util/createAddress.scd".loadRelative[0];
 
-{ |config, controller, eventBroker|
-  var ui;
+{ |config, controller, eventRouter|
   var mft;
+
+  var subscribe = { |addressAsArray, action|
+    var address = createAddress.value(addressAsArray);
+    var ui = (
+      notify: { |self, msg| action.value(msg) }
+    );
+    eventRouter.subscribe([address], ui)
+  };
 
   var increment = { |addressAsArray|
     var address = createAddress.value(addressAsArray); 
@@ -86,27 +93,18 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
     })
   };
 
-  /*
-  ui = (
-    notify: { |self, msg|
-      if (msg.topic == \track, {
-        var ctrls = outputMap[msg.param];
-        var y = msg.index;
-        var vel = msg.normalized;
-        if (ctrls != nil, {
-          ctrls.do({ |ctrl| mft.ledset(ctrl.level, ctrl.x, y, vel) });
-        });
-      }, {
-        var level = 0;
-        var x = masterCtrlXPositions[msg.param];
-        var y = 3;
-        var vel = msg.normalized;
-        if (x != nil, {
-          mft.ledset(level, x, y, vel);
-        })
-      })
-    }
-  );
-  eventBroker.subscribe([\track, \master], ui);
-  */
+  config.numTracks.do({ |i|
+    subscribe.value(['sampler', i, 'offset'], { |msg| mft.ledset(0, 0, i, msg.normalized) });
+    subscribe.value(['sampler', i, 'window'], { |msg| mft.ledset(1, 0, i, msg.normalized) });
+    subscribe.value(['sampler', i, 'lpf', 'cutoff'], { |msg| mft.ledset(0, 1, i, msg.normalized) });
+    subscribe.value(['sampler', i, 'lpf', 'resonance'], { |msg| mft.ledset(1, 1, i, msg.normalized) });
+    subscribe.value(['sampler', i, 'rate'], { |msg|
+      mft.ledset(0, 2, i, msg.normalized);
+      mft.ledset(1, 2, i, msg.normalized);
+    });
+    subscribe.value(['sampler', i, 'volume'], { |msg|
+      mft.ledset(0, 3, i, msg.normalized);
+      mft.ledset(1, 3, i, msg.normalized);
+    });
+  })
 }
