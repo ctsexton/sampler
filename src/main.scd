@@ -9,6 +9,7 @@ var createSynth = "./synth.scd".loadRelative[0];
 var setupOSC = "./osc/setup.scd".loadRelative[0];
 var createParameters = "./core/parameters.scd".loadRelative[0];
 var createController = "./core/controller.scd".loadRelative[0];
+var createStore = "./core/store.scd".loadRelative[0];
 
 var main = { |config|
   var synth;
@@ -16,9 +17,11 @@ var main = { |config|
   var samples = getSamples.value(config);
   var parameterTree = createParameters.value(config.numTracks);
   var controller = createController.value(parameterTree, eventRouter);
+  var store = createStore.value(controller, controller.listParameters())
   eventRouter.addAddresses(controller.listParameters());
+
   if (config.enableMIDI, {
-    setupMidiDevices.value(config, controller, eventRouter);
+    setupMidiDevices.value(config, controller, eventRouter, store);
   });
   if (config.enableGUI, {
     setupGUI.value(config, controller, eventRouter, samples);

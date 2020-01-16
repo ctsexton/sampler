@@ -1,6 +1,7 @@
 var createAddress = "../util/createAddress.scd".loadRelative[0];
+var createPresetController = "./gridPresets.scd".loadRelative[0];
 
-{ |config, controller, eventRouter|
+{ |config, controller, eventRouter, store|
   var mft;
 
   var subscribe = { |addressAsArray, action|
@@ -78,6 +79,8 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
 
   MIDIClient.init;
   MIDIIn.connectAll;
+
+  createPresetController.value(store);
 
   mft = MFT(MIDIEndPoint(config.mftDeviceName, config.mftPortName));
 
