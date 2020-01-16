@@ -27,7 +27,7 @@
 
   (
     save: { |self, key| saveAllParameters.value(key) },
-    restore: { |self, key| restoreAllParameter.value(key) },
-    clear: { clearAllParameter.value() }
+    restore: { |self, key| restoreAllParameters.value(key) },
+    clear: { clearAllParameters.value() }
   )
 }
