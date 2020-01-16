@@ -17,7 +17,7 @@ var main = { |config|
   var samples = getSamples.value(config);
   var parameterTree = createParameters.value(config.numTracks);
   var controller = createController.value(parameterTree, eventRouter);
-  var store = createStore.value(controller, controller.listParameters())
+  var store = createStore.value(controller, controller.listParameters());
   eventRouter.addAddresses(controller.listParameters());
 
   if (config.enableMIDI, {
