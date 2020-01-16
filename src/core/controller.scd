@@ -32,8 +32,6 @@
     boolean: {|address, parameterConfig|
       {|self, val|
         var stateVal, busVal;
-        address.postln;
-        val.postln;
         if (val, {
           stateVal = true;
           busVal = 1;
