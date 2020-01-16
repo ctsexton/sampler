@@ -13,6 +13,8 @@
     enableDebug: doc["debug"].asInteger.asBoolean,
     mftDeviceName: doc["mftDeviceName"],
     mftPortName: doc["mftPortName"],
+    lpDeviceName: doc["lpDeviceName"],
+    lpPortName: doc["lpPortName"],
     numTracks: doc["numTracks"].asInteger,
     oscInPort: doc["oscInPort"].asInteger,
     oscOutAddress: doc["oscOutAddress"],
