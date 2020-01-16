@@ -80,7 +80,7 @@ var createPresetController = "./gridPresets.scd".loadRelative[0];
   MIDIClient.init;
   MIDIIn.connectAll;
 
-  createPresetController.value(store);
+  createPresetController.value(config, store);
 
   mft = MFT(MIDIEndPoint(config.mftDeviceName, config.mftPortName));
 
