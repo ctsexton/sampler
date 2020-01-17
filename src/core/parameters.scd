@@ -65,7 +65,7 @@
         sampleIndex: (
           default: 0,
           minimum: 0,
-          maximum: 0,
+          maximum: 2,
           type: \integer
         ),
         playhead: (

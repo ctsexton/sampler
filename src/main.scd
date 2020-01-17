@@ -33,7 +33,7 @@ var main = { |config|
     setupOSC.value(config, controller, eventRouter);
   });
   controller.initialize();
-  synth = createSynth.value(config, samples, controller);
+  synth = createSynth.value(config, samples, controller, eventRouter);
   synth.start;
 };
 

@@ -19,7 +19,7 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
   parentWindow.front;
 
   tracks = config.numTracks.collect{ |i|
-    var track = createTrackGUI.value(config, trackViews[i], controller, i);
+    var track = createTrackGUI.value(config, trackViews[i], controller, i, samples);
     subscribe.value(['sampler', i, 'rate'], { |msg| track.rate.setRate(msg.normalized) });
     subscribe.value(['sampler', i, 'lpf', 'cutoff'], { |msg| track.filter.setCutoff(msg.normalized) });
     subscribe.value(['sampler', i, 'lpf', 'resonance'], { |msg| track.filter.setResonance(msg.normalized) });

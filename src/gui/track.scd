@@ -3,16 +3,30 @@ var createLooperGUI = "./looper.scd".loadRelative[0];
 var createVolumeGUI = "./volume.scd".loadRelative[0];
 var createRateGUI = "./rate.scd".loadRelative[0];
 var createAddress = "../util/createAddress.scd".loadRelative[0];
+var createSampleSelectorGUI = "./sampleSelector.scd".loadRelative[0];
 
 {
-  |config, window, controller, trackIndex|
-  var rate, rateAction, filter, filterAction, looper, looperAction, volume, volumeAction;
+  |config, window, controller, trackIndex, samples|
+  var sampleSelector, sampleSelectorAction, rate, rateAction, filter, filterAction, looper, looperAction, volume, volumeAction;
   var i = trackIndex;
   var rateView = View.new().maxWidth_(50);
   var filterView = View.new();
   var looperView = View.new();
   var volumeView = View.new().maxWidth_(40);
-  window.layout = HLayout(rateView, looperView, filterView, volumeView);
+  var dropdownView = View.new().maxHeight_(22);
+  window.layout = HLayout(rateView, VLayout(dropdownView, looperView), filterView, volumeView);
+
+  sampleSelectorAction = { |address|
+    { |sampleIndex|
+      { controller.setParameter(address, sampleIndex) }
+    }
+  };
+
+  sampleSelector = createSampleSelectorGUI.value(
+    dropdownView,
+    samples,
+    sampleSelectorAction.value(createAddress.value(['sampler', trackIndex, 'sampleIndex']))
+  );
 
   rateAction = { |address|
     { |rate|

@@ -1,6 +1,6 @@
 var createAddress = "./util/createAddress.scd".loadRelative[0];
 
-{ |config, samples, controller|
+{ |config, samples, controller, eventRouter|
   var paramMap = [
     (
       ext: 'volume',
@@ -59,11 +59,16 @@ var createAddress = "./util/createAddress.scd".loadRelative[0];
         Synth.new(\windowLooper, params.flat);
       });
 
-      synths.do({ |sampler, i|
+      synths.do({ |synth, i|
+        var sampleIndexAddress = createAddress.value(['sampler', i, 'sampleIndex']);
+        var sampleIndexAction = ( notify: { |self, msg|
+          synth.set(\buffer, samples[msg.val].buffer);
+        });
+        eventRouter.subscribe([sampleIndexAddress], sampleIndexAction);
         paramMap.do({ |item|
           var address = createAddress.value(['sampler', i, item.ext]);
-          sampler.map(item.int, controller.getBus(address));
-        })
+          synth.map(item.int, controller.getBus(address));
+        });
       });
 
       s.sync;
