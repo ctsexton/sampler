@@ -8,23 +8,27 @@
   var setAllColors = { |color|
     gridState.keysValuesDo({|key, value|
       if (value !== color, {
-        launchpad.lightGrid(key.x, key.y, color)
+        var x = key.mod(8);
+        var y = key.div(8);
+        launchpad.lightGrid(x, y, color);
       })
     })
   };
 
   var storeActions = [
     { |msg|
-      store.restore(msg.nn);
-      setAllColors.value(\yellow);
-      launchpad.lightGrid(msg.x, msg.y, \green);
-      gridState[msg] = \green;
+      if (gridState.includesKey(msg.nn), {
+        store.restore(msg.nn);
+        setAllColors.value(\yellow);
+        launchpad.lightGrid(msg.x, msg.y, \green);
+        gridState[msg.nn] = \green;
+      })
     },
     { |msg|
       store.save(msg.nn);
       setAllColors.value(\yellow);
       launchpad.lightGrid(msg.x, msg.y, \red);
-      gridState[msg] = \red;
+      gridState[msg.nn] = \red;
     }
   ];
 
@@ -40,4 +44,6 @@
       launchpad.ledset(\top, msg.index, [\green, \red][msg.vel]);
     })
   };
+
+  launchpad.clear();
 }
