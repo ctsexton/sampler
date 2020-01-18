@@ -38,10 +38,20 @@ var createAddress = "./util/createAddress.scd".loadRelative[0];
 
   (
     start: {
-      var synths, output, trackOutputs, playheads;
+      var synths, output, trackOutputs, playheads, masterInput;
       playheads = config.numTracks.collect({ Bus.control() });
       trackOutputs = config.numTracks.collect({ Bus.audio(s, 2) });
-      output = { Out.ar(0, Mix.ar(In.ar(trackOutputs, 2))) }.play;
+      masterInput = Bus.audio(s, 2);
+      { Out.ar(masterInput, Mix.ar(In.ar(trackOutputs, 2))) }.play;
+      output = Synth.new(\master, [
+        \input, masterInput,
+        \out, 0,
+        \monitor, 2,
+        \outVolume, 0,
+        \monitorVolume, 0
+      ]);
+      output.map(\outVolume, controller.getBus('/master/volume'));
+      output.map(\monitorVolume, controller.getBus('/master/monitor/volume'));
       s.sync;
 
       synths = config.numTracks.collect({ |i|

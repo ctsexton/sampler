@@ -3,7 +3,10 @@ var createEventBroker = "./core/eventRouter.scd".loadRelative[0];
 var setupMidiDevices = "./midi/setup.scd".loadRelative[0];
 var setupGUI = "./gui/setup.scd".loadRelative[0];
 var setupDebugUI = "./debugUI.scd".loadRelative[0];
-var synthDefs = ["./synthdefs/sampler.scd".loadRelative[0]];
+var synthDefs = [
+  "./synthdefs/sampler.scd".loadRelative[0],
+  "./synthdefs/master.scd".loadRelative[0]
+];
 var getSamples = "./samples.scd".loadRelative[0];
 var createSynth = "./synth.scd".loadRelative[0];
 var setupOSC = "./osc/setup.scd".loadRelative[0];
