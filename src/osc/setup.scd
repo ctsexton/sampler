@@ -10,6 +10,10 @@
       controller.setParameter(address, msg[1])
     }, address));
   });
+
+  OSCFunc.new({ |msg|
+    netAddr.sendMsg('/pong', msg[1]);
+  }, '/ping');
   
   ui = (
     notify: { |self, event|
