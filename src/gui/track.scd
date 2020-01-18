@@ -78,6 +78,7 @@ var createSampleSelectorGUI = "./sampleSelector.scd".loadRelative[0];
     rate: rate,
     filter: filter,
     looper: looper,
-    volume: volume
+    volume: volume,
+    sampleSelector: sampleSelector
   )
 }

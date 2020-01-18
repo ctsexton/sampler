@@ -26,6 +26,7 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
     subscribe.value(['sampler', i, 'offset'], { |msg| track.looper.setOffset(msg.normalized) });
     subscribe.value(['sampler', i, 'window'], { |msg| track.looper.setWindow(msg.normalized) });
     subscribe.value(['sampler', i, 'sampleIndex'], { |msg| track.looper.setSoundfile(samples[msg.val].soundfile) });
+    subscribe.value(['sampler', i, 'sampleIndex'], { |msg| track.sampleSelector.setSampleIndex(msg.val) });
     subscribe.value(['sampler', i, 'volume'], { |msg| track.volume.setVolume(msg.normalized) });
     track;
   };
