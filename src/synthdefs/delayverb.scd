@@ -4,9 +4,10 @@ SynthDef.new(\delayverb, { |buffer, input, output, delayDryWet, reverbDryWet, in
   sig = In.ar(input, 2);
 
   // Delay
-  direction = (LFNoise0.kr(intensity.linlin(0, 1, 0.5, 10)) > 0.5) * 2 - 1;
-  rate = direction * Lag.kr(LFNoise0.kr(intensity.linlin(0, 1, 10, 30))) * intensity.linlin(0, 1, 1, 10);
-  index = Phasor.ar(0, rate, 0, BufFrames.kr(buffer));
+  /* direction = (LFNoise0.kr(intensity.linlin(0, 1, 0.5, 10)) > 0.5) * 2 - 1; */
+  /* rate = direction * Lag.kr(LFNoise0.kr(intensity.linlin(0, 1, 10, 30))) * intensity.linlin(0, 1, 1, 10); */
+  /* index = Phasor.ar(0, rate, 0, BufFrames.kr(buffer)); */
+  index = Phasor.ar(0, ((LFNoise0.kr(2) > 0.5) * -1) + Lag.kr(LFNoise0.kr(10), 0.1) * 2, 0, 44100);
   delaySig = BufRd.ar(2, buffer, index);
   delaySig = XFade2.ar(sig, delaySig, delayDryWet);
   IBufWr.ar(sig, buffer, index, 1, delayFeedback);
@@ -17,6 +18,6 @@ SynthDef.new(\delayverb, { |buffer, input, output, delayDryWet, reverbDryWet, in
   4.do({ reverbSig = AllpassN.ar(reverbSig, 0.050, [0.050.rand, 0.050.rand], 1) });
 
   out = XFade2.ar(delaySig, reverbSig, reverbDryWet);
-  out = sig.tanh * amplitudeWarp.map(volume.varlag(0.005));
+  out = out.tanh * amplitudeWarp.map(volume.varlag(0.005));
   Out.ar(output, out);
 });
