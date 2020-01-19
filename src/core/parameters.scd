@@ -1,5 +1,15 @@
 { |numSamplers|
   (
+    input: Array.fill(1, {
+      (
+        gain: (
+          default: 0,
+          minimum: 0,
+          maximum: 1,
+          type: \float
+        )
+      )
+    }),
     sampler: Array.fill(numSamplers, {
       (
         offset: (

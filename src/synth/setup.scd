@@ -20,7 +20,7 @@ var createInput = "./input.scd".loadRelative[0];
 
       s.sync;
       
-      createInput.value(micInput);
+      createInput.value(micInput, controller.getBus('/input/0/gain'));
     }
   )
 }
