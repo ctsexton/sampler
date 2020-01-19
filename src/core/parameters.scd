@@ -90,6 +90,42 @@
         )
       )
     }),
+    delayverb: (
+      volume: (
+        default: 0,
+        minimum: 0,
+        maximum: 1,
+        type: \float
+      ),
+      delay: (
+        drywet: (
+          default: -1,
+          minimum: -1,
+          maximum: 1,
+          type: \float
+        ),
+        feedback: (
+          default: 0.5,
+          minimum: 0,
+          maximum: 1,
+          type: \float
+        )
+      ),
+      reverb: (
+        drywet: (
+          default: -1,
+          minimum: -1,
+          maximum: 1,
+          type: \float
+        )
+      ),
+      intensity: (
+        default: 0.25,
+        minimum: 0,
+        maximum: 1,
+        type: \float
+      )
+    ),
     master: (
       reverb: (
         (

@@ -16,7 +16,7 @@ var createInput = "./input.scd".loadRelative[0];
       s.sync;
 
       createSampler.value(config, samples, controller, eventRouter, samplerOutputs);
-      createDelayverb.value(controller, eventRouter, micInput, delayverbOutput);
+      createDelayverb.value(controller, micInput, delayverbOutput);
 
       s.sync;
       
