@@ -5,10 +5,12 @@ var setupGUI = "./gui/setup.scd".loadRelative[0];
 var setupDebugUI = "./debugUI.scd".loadRelative[0];
 var synthDefs = [
   "./synthdefs/sampler.scd".loadRelative[0],
-  "./synthdefs/master.scd".loadRelative[0]
+  "./synthdefs/master.scd".loadRelative[0],
+  "./synthdefs/delayverb.scd".loadRelative[0],
+  "./synthdefs/input.scd".loadRelative[0]
 ];
 var getSamples = "./samples.scd".loadRelative[0];
-var createSynth = "./synth.scd".loadRelative[0];
+var createSynth = "./synth/setup.scd".loadRelative[0];
 var setupOSC = "./osc/setup.scd".loadRelative[0];
 var createParameters = "./core/parameters.scd".loadRelative[0];
 var createController = "./core/controller.scd".loadRelative[0];
