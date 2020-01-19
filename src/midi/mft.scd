@@ -78,19 +78,29 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
         ]
       ]
     ];
-    var combined = samplerFunctions ++ delayverbFunctions;
-    combined.postln;
-    combined;
+    samplerFunctions ++ delayverbFunctions;
   }.value();
 
-  var clickFunctions = config.numTracks.collect({ |i|
-    [
-      {},
-      {},
-      reverse.value(['sampler', i, 'rate']),
-      {}
-    ]
-  });
+  var clickFunctions = {
+    var samplerFunctions = config.numTracks.collect({ |i|
+      [
+        [{}, {}],
+        [{}, {}],
+        [{}, reverse.value(['sampler', i, 'rate'])],
+        [{}, {}]
+      ]
+    });
+    var intensityTmp = 0;
+    var delayverbFunctions = [
+      [
+        [{}, {}],
+        [{}, {}],
+        [{}, {}],
+        [{}, {}]
+      ]
+    ];
+    samplerFunctions ++ delayverbFunctions;
+  }.value();
 
   var doubleClickFunctions = config.numTracks.collect({ |i|
     [
@@ -111,8 +121,10 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
   mft.onDoubleClick = { |self, event| doubleClickFunctions[event.y][event.x].value() };
 
   mft.onClick = { |self, event|
-    if (event.vel == 1, {
-      clickFunctions[event.y][event.x].value()
+    if (event.vel === 1, {
+      clickFunctions[event.y][event.x][1].value()
+    }, {
+      clickFunctions[event.y][event.x][0].value()
     })
   };
 
