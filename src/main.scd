@@ -42,6 +42,7 @@ var main = { |config|
   synth.start;
 };
 
+s.options.numOutputBusChannels = 4;
 s.waitForBoot({ 
   var configFilePath = "../config.yml".resolveRelative();
   var config = createConfig.value(configFilePath);
