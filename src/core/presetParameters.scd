@@ -1,7 +1,7 @@
 var createAddress = "../util/createAddress.scd".loadRelative[0];
 
 { |config|
-  var samplerParams = Array.fill(config.numSamplers, { |i|
+  var samplerParams = Array.fill(config.numTracks, { |i|
     [
       createAddress.value(['sampler', i, 'offset']),
       createAddress.value(['sampler', i, 'window']),
