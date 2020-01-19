@@ -14,8 +14,18 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
       createAddress.value(['sampler', i, 'sampleIndex'])
     ]
   });
+  var delayverbParams = [
+    createAddress.value(['delayverb', 'volume']),
+    createAddress.value(['delayverb', 'delay', 'drywet']),
+    createAddress.value(['delayverb', 'reverb', 'drywet']),
+    createAddress.value(['delayverb', 'delay', 'feedback']),
+    createAddress.value(['delayverb', 'delay', 'feedback']),
+    createAddress.value(['delayverb', 'intensity']),
+    createAddress.value(['delayverb', 'intensity'])
+  ];
   var allParametersForPresets = [
-    samplerParams
+    samplerParams,
+    delayverbParams
   ].flat;
   allParametersForPresets;
 }
