@@ -19,13 +19,13 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
   parentWindow.front;
 
   tracks = config.numTracks.collect{ |i|
-    var track = createTrackGUI.value(config, trackViews[i], controller, i, samples);
+    var track = createTrackGUI.value(config, trackViews[i], controller, i, samples[i]);
     subscribe.value(['sampler', i, 'rate'], { |msg| track.rate.setRate(msg.normalized) });
     subscribe.value(['sampler', i, 'lpf', 'cutoff'], { |msg| track.filter.setCutoff(msg.normalized) });
     subscribe.value(['sampler', i, 'lpf', 'resonance'], { |msg| track.filter.setResonance(msg.normalized) });
     subscribe.value(['sampler', i, 'offset'], { |msg| track.looper.setOffset(msg.normalized) });
     subscribe.value(['sampler', i, 'window'], { |msg| track.looper.setWindow(msg.normalized) });
-    subscribe.value(['sampler', i, 'sampleIndex'], { |msg| track.looper.setSoundfile(samples[msg.val].soundfile) });
+    subscribe.value(['sampler', i, 'sampleIndex'], { |msg| track.looper.setSoundfile(samples[i][msg.val]) });
     subscribe.value(['sampler', i, 'sampleIndex'], { |msg| track.sampleSelector.setSampleIndex(msg.val) });
     subscribe.value(['sampler', i, 'volume'], { |msg| track.volume.setVolume(msg.normalized) });
     track;

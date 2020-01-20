@@ -20,7 +20,7 @@ var createStore = "./core/store.scd".loadRelative[0];
 var main = { |config|
   var synth;
   var eventRouter = createEventBroker.value();
-  var samples = getSamples.value(config);
+  var samples = config.numTracks.collect({ getSamples.value(config) });
   var parameterTree = createParameters.value(config.numTracks);
   var controller = createController.value(parameterTree, eventRouter);
   var store = createStore.value(controller, createPresetParameters.value(config));

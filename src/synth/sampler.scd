@@ -46,7 +46,7 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
 
     params = params.add([\playhead, playheads[i]]);
     params = params.add([\output, outputBusses[i]]);
-    params = params.add([\buffer, samples[0].buffer]);
+    params = params.add([\buffer, samples[i][0].buffer]);
     params = params.add([\status, 0]);
     params = params.add([\prefilterOutput, Bus.audio(s, 2)]);
 
@@ -56,7 +56,7 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
   synths.do({ |synth, i|
     var sampleIndexAddress = createAddress.value(['sampler', i, 'sampleIndex']);
     var sampleIndexAction = ( notify: { |self, msg|
-      synth.set(\buffer, samples[msg.val].buffer);
+      synth.set(\buffer, samples[i][msg.val].buffer);
     });
     eventRouter.subscribe([sampleIndexAddress], sampleIndexAction);
     paramMap.do({ |item|
