@@ -38,9 +38,13 @@
   updateBufferView = Routine({
     loop {
       soundfile.buffer.loadToFloatArray(action: { |arr|
-        { view.setData(arr, channels: 2, samplerate: s.sampleRate.asInteger) }.defer;
+        {
+          view.setData(arr, channels: 2, samplerate: s.sampleRate.asInteger);
+          updateOffset.value();
+          updateWindow.value();
+        }.defer;
       });
-      0.5.wait;
+      1.wait;
     }
   });
   updateSoundfile = {
@@ -77,7 +81,6 @@
       updateTimeCursor = OSCFunc.new({ |msg|
         { view.timeCursorPosition = msg[3] }.defer;
       }, playheadOscAddr, s.addr);
-      updateBufferView.play(AppClock);
     },
     stopAnimation: {
       started = false;

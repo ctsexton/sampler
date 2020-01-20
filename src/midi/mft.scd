@@ -54,7 +54,7 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
         ],
         [
           increment.value(['sampler', i, 'volume']),
-          increment.value(['sampler', i, 'volume'])
+          increment.value(['sampler', i, 'feedback'])
         ]
       ]
     });
@@ -87,7 +87,10 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
         [{}, {}],
         [{}, {}],
         [{}, reverse.value(['sampler', i, 'rate'])],
-        [{}, {}]
+        [
+          { controller.setParameter(createAddress.value(['sampler', i, 'record']), 0) },
+          { controller.setParameter(createAddress.value(['sampler', i, 'record']), 1) }
+        ]
       ]
     });
     var intensityTmp = 0;

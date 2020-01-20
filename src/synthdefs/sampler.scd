@@ -1,7 +1,7 @@
 var amplitudeWarp = \db.asWarp;
 SynthDef(\windowLooper, {
-  | buffer, rate, window, offset, playhead, volume, lpfCutoff, lpfResonance, hpfCutoff, status, prefilterOutput, output |
-  var sig, bufFrames, prefilter, out, index, resetPoint, isOutsideBounds, maxWindowSize, outsideBoundsTrigger, ramp, env, diff, playback;
+  | buffer, rate, window, offset, playhead, volume, lpfCutoff, lpfResonance, hpfCutoff, status, prefilterOutput, output, record, input, feedback |
+  var sig, bufFrames, prefilter, out, index, resetPoint, isOutsideBounds, maxWindowSize, outsideBoundsTrigger, ramp, env, diff, playback, writeMix, recording;
 
   bufFrames = BufFrames.kr(buffer);
 
@@ -16,6 +16,9 @@ SynthDef(\windowLooper, {
   Out.kr(playhead, index * bufFrames);
    
   playback = BufRd.ar(2, buffer, index * bufFrames, 1, 4);
+  recording = In.kr(record);
+  writeMix = (recording < 0.5) + (recording * In.kr(feedback));
+  IBufWr.ar(In.ar(input, 2) * recording, buffer, index * bufFrames, 1, writeMix);
 
   // Ramp & Switch
   env = Env([1, 1, 0], [0, 512/SampleRate.ir]);
