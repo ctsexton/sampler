@@ -44,7 +44,7 @@ var main = { |config|
 };
 
 s.options.numOutputBusChannels = 4;
-s.options.hardwareBufferSize = 128;
+s.options.hardwareBufferSize = 256;
 s.waitForBoot({ 
   var configFilePath = "../config.yml".resolveRelative();
   var config = createConfig.value(configFilePath);

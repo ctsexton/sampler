@@ -10,7 +10,6 @@
     updateOffset, 
     updateWindow, 
     updateBufferView,
-    count,
     updateSoundfile;
 
   started = false;
@@ -36,13 +35,9 @@
 
   updateOffset = { { view.setSelectionStart(0, offset * view.numFrames) }.defer };
   updateWindow = { { view.setSelectionSize(0, window * view.numFrames) }.defer };
-  count = 0;
   updateBufferView = Routine({
     loop {
-      2.wait;
       soundfile.buffer.loadToFloatArray(action: { |arr|
-        count = 1 + count;
-        count.postln;
         if (arr.size !== 0, {
           {
             view.setData(arr, channels: 2, samplerate: s.sampleRate.asInteger);
@@ -51,28 +46,13 @@
           }.defer
         })
       });
+      0.5.yield;
     }
   });
-  updateSoundfile = {
-    if (soundfile != view.soundfile,
-      {
-        {
-          view.soundfile = soundfile;
-          view.read(0, soundfile.numFrames);
-          view.refresh;
-        }.defer;
-        updateOffset.value();
-        updateWindow.value();
-      }
-    )
-  };
 
   (
     setSoundfile: { |self, newSoundFile|
       soundfile = newSoundFile;
-      updateBufferView.stop;
-      updateBufferView.reset;
-      updateBufferView.play(AppClock);
     },
     setOffset: { |self, newOffset|
       offset = newOffset;
@@ -87,10 +67,12 @@
       updateTimeCursor = OSCFunc.new({ |msg|
         { view.timeCursorPosition = msg[3] * view.numFrames }.defer;
       }, playheadOscAddr, s.addr);
+      updateBufferView.play(AppClock);
     },
     stopAnimation: {
       started = false;
       updateTimeCursor.free;
+      updateBufferView.stop;
     },
     toggleAnimation: { |self, input|
       var choice;
