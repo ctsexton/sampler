@@ -1,6 +1,6 @@
 { |numSamplers|
   (
-    input: Array.fill(1, {
+    input: Array.fill(2, {
       (
         gain: (
           default: 0,

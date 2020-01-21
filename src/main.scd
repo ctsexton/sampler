@@ -7,6 +7,7 @@ var synthDefs = [
   "./synthdefs/sampler.scd".loadRelative[0],
   "./synthdefs/master.scd".loadRelative[0],
   "./synthdefs/delayverb.scd".loadRelative[0],
+  "./synthdefs/samplerInputMixer.scd".loadRelative[0],
   "./synthdefs/input.scd".loadRelative[0]
 ];
 var getSamples = "./samples.scd".loadRelative[0];
