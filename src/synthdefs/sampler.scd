@@ -13,7 +13,7 @@ SynthDef(\windowLooper, {
   index = Phasor.ar(outsideBoundsTrigger, rate / bufFrames, 0, 1, resetPoint);
   isOutsideBounds = 1 - InRange.ar(index, offset, offset + maxWindowSize);
   LocalOut.ar(isOutsideBounds);
-  Out.kr(playhead, index * bufFrames);
+  Out.kr(playhead, index);
    
   playback = BufRd.ar(2, buffer, index * bufFrames, 1, 4);
   recording = In.kr(record);
