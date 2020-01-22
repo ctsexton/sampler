@@ -1,6 +1,6 @@
 var createAddress = "../util/createAddress.scd".loadRelative[0];
 
-{ |config, samples, controller, eventRouter, outputBusses|
+{ |config, samples, controller, eventRouter, outputBusses, input|
   var synths, output, playheads, masterInput;
   var paramMap = [
     (
@@ -48,6 +48,9 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
     params = params.add([\output, outputBusses[i]]);
     params = params.add([\buffer, samples[i][0].buffer]);
     params = params.add([\status, 0]);
+    params = params.add([\input, input]);
+    params = params.add([\record, controller.getBus(createAddress.value(['sampler', i, 'record']))]);
+    params = params.add([\feedback, controller.getBus(createAddress.value(['sampler', i, 'feedback']))]);
     params = params.add([\prefilterOutput, Bus.audio(s, 2)]);
 
     Synth.new(\windowLooper, params.flat);

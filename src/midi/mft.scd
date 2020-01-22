@@ -54,7 +54,7 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
         ],
         [
           increment.value(['sampler', i, 'volume']),
-          increment.value(['sampler', i, 'volume'])
+          increment.value(['sampler', i, 'feedback'])
         ]
       ]
     });
@@ -78,7 +78,27 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
         ]
       ]
     ];
-    samplerFunctions ++ delayverbFunctions;
+    var insOuts = [
+      [
+        [
+          increment.value(['input', 0, 'gain']),
+          increment.value(['input', 0, 'gain'])
+        ],
+        [
+          increment.value(['input', 1, 'gain']),
+          increment.value(['input', 1, 'gain'])
+        ],
+        [
+          increment.value(['master', 'monitor', 'volume']),
+          increment.value(['master', 'monitor', 'volume'])
+        ],
+        [
+          increment.value(['master', 'volume']),
+          increment.value(['master', 'volume'])
+        ]
+      ]
+    ];
+    samplerFunctions ++ delayverbFunctions ++ insOuts;
   }.value();
 
   var clickFunctions = {
@@ -87,7 +107,10 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
         [{}, {}],
         [{}, {}],
         [{}, reverse.value(['sampler', i, 'rate'])],
-        [{}, {}]
+        [
+          { controller.setParameter(createAddress.value(['sampler', i, 'record']), 0) },
+          { controller.setParameter(createAddress.value(['sampler', i, 'record']), 1) }
+        ]
       ]
     });
     var intensityTmp = 0;
@@ -106,7 +129,7 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
     [
       resetBulk.value([['sampler', i, 'offset'], ['sampler', i, 'window']]),
       resetBulk.value([['sampler', i, 'lpf', 'cutoff'], ['sampler', i, 'lpf', 'resonance']]),
-      {},
+      reset.value(['sampler', i, 'rate']),
       reset.value(['sampler', i, 'volume'])
     ]
   });
@@ -137,10 +160,8 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
       mft.ledset(0, 2, i, msg.normalized);
       mft.ledset(1, 2, i, msg.normalized);
     });
-    subscribe.value(['sampler', i, 'volume'], { |msg|
-      mft.ledset(0, 3, i, msg.normalized);
-      mft.ledset(1, 3, i, msg.normalized);
-    });
+    subscribe.value(['sampler', i, 'volume'], { |msg| mft.ledset(0, 3, i, msg.normalized) });
+    subscribe.value(['sampler', i, 'feedback'], { |msg| mft.ledset(1, 3, i, msg.normalized) });
   });
   subscribe.value(['delayverb', 'delay', 'drywet'], { |msg| mft.ledset(0, 0, 2, msg.normalized) });
   subscribe.value(['delayverb', 'reverb', 'drywet'], { |msg| mft.ledset(1, 0, 2, msg.normalized) });
@@ -156,4 +177,8 @@ var createAddress = "../util/createAddress.scd".loadRelative[0];
     mft.ledset(0, 3, 2, msg.normalized);
     mft.ledset(1, 3, 2, msg.normalized);
   });
+  subscribe.value(['input', 0, 'gain'], { |msg| mft.ledset(0, 0, 3, msg.normalized) });
+  subscribe.value(['input', 1, 'gain'], { |msg| mft.ledset(0, 1, 3, msg.normalized) });
+  subscribe.value(['master', 'monitor', 'volume'], { |msg| mft.ledset(0, 2, 3, msg.normalized) });
+  subscribe.value(['master', 'volume'], { |msg| mft.ledset(0, 3, 3, msg.normalized) });
 }

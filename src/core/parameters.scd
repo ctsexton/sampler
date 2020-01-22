@@ -1,6 +1,6 @@
 { |numSamplers|
   (
-    input: Array.fill(1, {
+    input: Array.fill(2, {
       (
         gain: (
           default: 0,
@@ -75,7 +75,7 @@
         sampleIndex: (
           default: 0,
           minimum: 0,
-          maximum: 2,
+          maximum: 11,
           type: \integer
         ),
         playhead: (
@@ -84,6 +84,18 @@
         ),
         jitter: (
           default: 0,
+          minimum: 0,
+          maximum: 1,
+          type: \float
+        ),
+        record: (
+          default: 0,
+          minimum: 0,
+          maximum: 1,
+          type: \integer
+        ),
+        feedback: (
+          default: 1,
           minimum: 0,
           maximum: 1,
           type: \float

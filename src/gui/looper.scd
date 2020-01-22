@@ -38,31 +38,21 @@
   updateBufferView = Routine({
     loop {
       soundfile.buffer.loadToFloatArray(action: { |arr|
-        { view.setData(arr, channels: 2, samplerate: s.sampleRate.asInteger) }.defer;
+        if (arr.size !== 0, {
+          {
+            view.setData(arr, channels: 2, samplerate: s.sampleRate.asInteger);
+            updateOffset.value();
+            updateWindow.value();
+          }.defer
+        })
       });
-      0.5.wait;
+      0.5.yield;
     }
   });
-  updateSoundfile = {
-    if (soundfile != view.soundfile,
-      {
-        {
-          view.soundfile = soundfile;
-          view.read(0, soundfile.numFrames);
-          view.refresh;
-        }.defer;
-        updateOffset.value();
-        updateWindow.value();
-      }
-    )
-  };
 
   (
     setSoundfile: { |self, newSoundFile|
       soundfile = newSoundFile;
-      updateBufferView.stop;
-      updateBufferView.reset;
-      updateBufferView.play(AppClock);
     },
     setOffset: { |self, newOffset|
       offset = newOffset;
@@ -75,13 +65,14 @@
     startAnimation: {
       started = true;
       updateTimeCursor = OSCFunc.new({ |msg|
-        { view.timeCursorPosition = msg[3] }.defer;
+        { view.timeCursorPosition = msg[3] * view.numFrames }.defer;
       }, playheadOscAddr, s.addr);
       updateBufferView.play(AppClock);
     },
     stopAnimation: {
       started = false;
       updateTimeCursor.free;
+      updateBufferView.stop;
     },
     toggleAnimation: { |self, input|
       var choice;

@@ -7,6 +7,7 @@ var synthDefs = [
   "./synthdefs/sampler.scd".loadRelative[0],
   "./synthdefs/master.scd".loadRelative[0],
   "./synthdefs/delayverb.scd".loadRelative[0],
+  "./synthdefs/samplerInputMixer.scd".loadRelative[0],
   "./synthdefs/input.scd".loadRelative[0]
 ];
 var getSamples = "./samples.scd".loadRelative[0];
@@ -44,7 +45,7 @@ var main = { |config|
 };
 
 s.options.numOutputBusChannels = 4;
-s.options.hardwareBufferSize = 128;
+s.options.hardwareBufferSize = 256;
 s.waitForBoot({ 
   var configFilePath = "../config.yml".resolveRelative();
   var config = createConfig.value(configFilePath);
